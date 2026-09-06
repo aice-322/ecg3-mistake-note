@@ -1,794 +1,2302 @@
 <!doctype html>
+
 <html lang="ja">
+
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#0b8fc7">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="心電図3級">
-  <link rel="manifest" href="manifest.webmanifest">
-  <title>心電図検定3級｜間違いノート</title>
-  <style>
-    :root{
-      --blue:#0b8fc7; --blue2:#e8f7fc; --navy:#17324d; --pink:#f25b8b;
-      --green:#51a66a; --yellow:#f4b63e; --purple:#7b62c7; --red:#e95757;
-      --bg:#f5f8fb; --card:#fff; --line:#d9e5ec; --muted:#6c7b87;
-      --shadow:0 6px 18px rgba(23,50,77,.08); --radius:18px;
-    }
-    *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
-    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",Meiryo,sans-serif;background:var(--bg);color:var(--navy);padding-bottom:84px}
-    button,input,select,textarea{font:inherit}
-    button{cursor:pointer}
-    .top{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:12px 16px}
-    .brand{display:flex;align-items:center;gap:10px;max-width:900px;margin:auto}
-    .heart{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,#ff6f9c,#f24e75);display:grid;place-items:center;color:#fff;font-size:23px;box-shadow:0 5px 12px rgba(242,78,117,.2)}
-    .brand h1{font-size:18px;margin:0;line-height:1.2}.brand small{color:var(--muted)}
-    main{max-width:900px;margin:auto;padding:16px}
-    .view{display:none}.view.active{display:block}
-    .hero{background:linear-gradient(135deg,#0b8fc7,#0875aa);color:white;border-radius:24px;padding:22px;box-shadow:var(--shadow);margin-bottom:16px}
-    .hero h2{margin:0 0 7px;font-size:25px}.hero p{margin:0;opacity:.92}
-    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:18px}
-    .stat{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.2);border-radius:15px;padding:12px}
-    .stat b{display:block;font-size:22px}.stat span{font-size:12px}
-    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);margin-bottom:12px}
-    .card h3{margin:0 0 10px;font-size:17px}
-    .section-title{display:flex;justify-content:space-between;align-items:center;margin:20px 2px 10px}.section-title h2{font-size:19px;margin:0}
-    .btn{border:0;border-radius:13px;padding:11px 14px;font-weight:700}
-    .btn.primary{background:var(--blue);color:#fff}.btn.secondary{background:var(--blue2);color:var(--blue)}
-    .btn.ghost{background:#fff;border:1px solid var(--line);color:var(--navy)}
-    .btn.danger{background:#fff0f0;color:var(--red)}
-    .btn.small{padding:8px 10px;font-size:13px}
-    .actions{display:flex;gap:8px;flex-wrap:wrap}
-    .progress{height:10px;background:#e8eef2;border-radius:999px;overflow:hidden}.progress>i{display:block;height:100%;background:linear-gradient(90deg,var(--blue),#57c2e6);border-radius:999px}
-    .row{display:flex;gap:10px;align-items:center;justify-content:space-between}.muted{color:var(--muted);font-size:13px}
-    .review-list,.mistake-list{display:grid;gap:10px}
-    .item{background:#fff;border:1px solid var(--line);border-radius:15px;padding:13px}
-    .badge{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:5px 9px;font-size:12px;font-weight:700}
-    .b-red{background:#ffe9e9;color:#b83232}.b-yellow{background:#fff4d9;color:#9b6500}.b-green{background:#eaf8ee;color:#2e7b43}.b-blue{background:#e7f6fc;color:#08739f}.b-purple{background:#eeeafd;color:#624da5}
-    label{display:block;font-weight:700;font-size:13px;margin:13px 0 6px}
-    input,select,textarea{width:100%;border:1px solid #ccdbe4;background:#fff;border-radius:12px;padding:11px 12px;color:var(--navy);outline:none}
-    textarea{min-height:95px;resize:vertical}
-    input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(11,143,199,.1)}
-    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .checkgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
-    .check{display:flex;align-items:center;gap:7px;background:#f7fafc;border:1px solid var(--line);border-radius:11px;padding:9px;font-size:13px}
-    .check input{width:auto}
-    .empty{text-align:center;padding:30px 12px;color:var(--muted)}
-    .bottom{position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(255,255,255,.98);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:7px max(10px,env(safe-area-inset-left)) calc(7px + env(safe-area-inset-bottom))}
-    .nav{max-width:900px;margin:auto;display:grid;grid-template-columns:repeat(4,1fr);gap:5px}.nav button{background:none;border:0;color:#73818b;padding:7px 4px;border-radius:12px;font-size:11px}.nav button.active{background:var(--blue2);color:var(--blue);font-weight:800}.nav .ico{display:block;font-size:19px;margin-bottom:2px}
-    .topic{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid #edf2f5}.topic:last-child{border-bottom:0}.topic .dot{width:12px;height:12px;border-radius:50%;background:var(--blue)}
-    .topic .bar{flex:1}.topic .bar .progress{height:7px;margin-top:5px}
-    .modal{position:fixed;inset:0;background:rgba(12,32,48,.45);display:none;z-index:50;padding:15px;overflow:auto}.modal.open{display:block}
-    .modalbox{max-width:720px;margin:25px auto;background:#fff;border-radius:22px;padding:18px;box-shadow:0 20px 60px rgba(0,0,0,.2)}
-    .modalhead{display:flex;justify-content:space-between;gap:10px;align-items:center}.modalhead h2{font-size:20px;margin:0}
-    .close{border:0;background:#eef3f6;border-radius:50%;width:36px;height:36px}
-    .toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%) translateY(15px);background:#17324d;color:#fff;border-radius:999px;padding:10px 16px;font-size:13px;opacity:0;pointer-events:none;transition:.25s;z-index:100}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-    .danger-note{background:#fff6f6;border:1px solid #ffd4d4;color:#9e3535;border-radius:12px;padding:11px;font-size:12px}
-    @media(max-width:620px){
-      .stats{grid-template-columns:repeat(2,1fr)}
-      .grid,.form-grid{grid-template-columns:1fr}
-      .checkgrid{grid-template-columns:1fr 1fr}
-      main{padding:12px}
-      .hero{padding:18px}
-      .btn{
 
-        min-height:46px;
+<meta charset="utf-8">
 
-        padding:12px 16px;
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
-        font-size:15px;
+<meta name="theme-color" content="#0b8fc7">
 
-      }
+<meta name="apple-mobile-web-app-capable" content="yes">
 
-      .btn.small{
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 
-        min-height:42px;
+<meta name="apple-mobile-web-app-title" content="心電図3級">
 
-        padding:10px 13px;
+<link rel="manifest" href="manifest.webmanifest">
 
-        font-size:14px;
+<title>心電図検定3級｜間違いノート v2.0.0</title>
 
-      }
+<style>
 
-      input,
+:root{
 
-      select,
+  --blue:#0b8fc7;
 
-      textarea{
+  --blue2:#e8f7fc;
 
-        min-height:48px;
+  --navy:#17324d;
 
-        font-size:16px;
+  --pink:#f25b8b;
 
-      }
+  --green:#51a66a;
 
-      textarea{
+  --yellow:#f4b63e;
 
-        min-height:120px;
+  --purple:#7b62c7;
 
-      }
+  --red:#e95757;
 
-      .nav button{
+  --bg:#f5f8fb;
 
-        min-height:54px;
+  --card:#fff;
 
-        font-size:11px;
+  --line:#d9e5ec;
 
-      }
+  --muted:#6c7b87;
 
-      .nav .ico{
+  --shadow:0 6px 18px rgba(23,50,77,.08);
 
-        font-size:21px;
+  --radius:18px;
 
-      }
+}
 
-      .modal{
+*{box-sizing:border-box}
 
-        padding:8px;
+html{
 
-      }
+  scroll-behavior:smooth;
 
-      .modalbox{
+}
 
-        margin:8px auto;
+body{
 
-        padding:16px;
+  margin:0;
 
-        border-radius:20px;
+  font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans",
 
-      }
+  "Yu Gothic",Meiryo,sans-serif;
 
-      .modalhead{
+  background:var(--bg);
 
-        position:sticky;
+  color:var(--navy);
 
-        top:0;
+  padding-bottom:92px;
 
-        background:#fff;
+}
 
-        z-index:2;
+button,input,select,textarea{
 
-        padding-bottom:10px;
+  font:inherit;
 
-      }
+}
 
-      .study-card{
+button{
 
-        border:2px solid var(--blue);
+  cursor:pointer;
 
-      }
-    }
-  </style>
+  -webkit-tap-highlight-color:transparent;
+
+}
+
+.top{
+
+  position:sticky;
+
+  top:0;
+
+  z-index:20;
+
+  background:rgba(255,255,255,.96);
+
+  backdrop-filter:blur(12px);
+
+  border-bottom:1px solid var(--line);
+
+  padding:11px 14px;
+
+}
+
+.brand{
+
+  display:flex;
+
+  align-items:center;
+
+  gap:10px;
+
+  max-width:900px;
+
+  margin:auto;
+
+}
+
+.heart{
+
+  width:43px;
+
+  height:43px;
+
+  min-width:43px;
+
+  border-radius:13px;
+
+  background:linear-gradient(135deg,#ff6f9c,#f24e75);
+
+  display:grid;
+
+  place-items:center;
+
+  color:#fff;
+
+  font-size:23px;
+
+  box-shadow:0 5px 12px rgba(242,78,117,.2);
+
+}
+
+.brand-main{
+
+  flex:1;
+
+  min-width:0;
+
+}
+
+.brand h1{
+
+  font-size:17px;
+
+  margin:0;
+
+  line-height:1.2;
+
+}
+
+.brand small{
+
+  color:var(--muted);
+
+  font-size:11px;
+
+}
+
+.version{
+
+  flex-shrink:0;
+
+  background:#eef6fa;
+
+  color:var(--blue);
+
+  border:1px solid #d5eaf2;
+
+  border-radius:999px;
+
+  padding:6px 9px;
+
+  font-size:11px;
+
+  font-weight:800;
+
+}
+
+main{
+
+  max-width:900px;
+
+  margin:auto;
+
+  padding:15px;
+
+}
+
+.view{
+
+  display:none;
+
+}
+
+.view.active{
+
+  display:block;
+
+}
+
+.hero{
+
+  background:linear-gradient(135deg,#0b8fc7,#0875aa);
+
+  color:white;
+
+  border-radius:24px;
+
+  padding:21px;
+
+  box-shadow:var(--shadow);
+
+  margin-bottom:15px;
+
+}
+
+.hero h2{
+
+  margin:0 0 7px;
+
+  font-size:24px;
+
+}
+
+.hero p{
+
+  margin:0;
+
+  opacity:.92;
+
+}
+
+.stats{
+
+  display:grid;
+
+  grid-template-columns:repeat(4,1fr);
+
+  gap:9px;
+
+  margin-top:18px;
+
+}
+
+.stat{
+
+  background:rgba(255,255,255,.14);
+
+  border:1px solid rgba(255,255,255,.2);
+
+  border-radius:15px;
+
+  padding:11px;
+
+}
+
+.stat b{
+
+  display:block;
+
+  font-size:21px;
+
+}
+
+.stat span{
+
+  font-size:11px;
+
+}
+
+.grid{
+
+  display:grid;
+
+  grid-template-columns:repeat(2,1fr);
+
+  gap:12px;
+
+}
+
+.card{
+
+  background:var(--card);
+
+  border:1px solid var(--line);
+
+  border-radius:var(--radius);
+
+  padding:16px;
+
+  box-shadow:var(--shadow);
+
+  margin-bottom:12px;
+
+}
+
+.card h3{
+
+  margin:0 0 10px;
+
+  font-size:17px;
+
+}
+
+.section-title{
+
+  display:flex;
+
+  justify-content:space-between;
+
+  align-items:center;
+
+  margin:20px 2px 10px;
+
+}
+
+.section-title h2{
+
+  font-size:19px;
+
+  margin:0;
+
+}
+
+.btn{
+
+  min-height:46px;
+
+  border:0;
+
+  border-radius:13px;
+
+  padding:11px 15px;
+
+  font-weight:700;
+
+  -webkit-tap-highlight-color:transparent;
+
+}
+
+.btn.primary{
+
+  background:var(--blue);
+
+  color:#fff;
+
+}
+
+.btn.secondary{
+
+  background:var(--blue2);
+
+  color:var(--blue);
+
+}
+
+.btn.ghost{
+
+  background:#fff;
+
+  border:1px solid var(--line);
+
+  color:var(--navy);
+
+}
+
+.btn.danger{
+
+  background:#fff0f0;
+
+  color:var(--red);
+
+}
+
+.btn.small{
+
+  min-height:42px;
+
+  padding:8px 11px;
+
+  font-size:13px;
+
+}
+
+.actions{
+
+  display:flex;
+
+  gap:8px;
+
+  flex-wrap:wrap;
+
+}
+
+.progress{
+
+  height:10px;
+
+  background:#e8eef2;
+
+  border-radius:999px;
+
+  overflow:hidden;
+
+}
+
+.progress>i{
+
+  display:block;
+
+  height:100%;
+
+  background:linear-gradient(90deg,var(--blue),#57c2e6);
+
+  border-radius:999px;
+
+}
+
+.row{
+
+  display:flex;
+
+  gap:10px;
+
+  align-items:center;
+
+  justify-content:space-between;
+
+}
+
+.muted{
+
+  color:var(--muted);
+
+  font-size:13px;
+
+}
+
+.review-list,
+
+.mistake-list{
+
+  display:grid;
+
+  gap:10px;
+
+}
+
+.item{
+
+  background:#fff;
+
+  border:1px solid var(--line);
+
+  border-radius:15px;
+
+  padding:13px;
+
+}
+
+.badge{
+
+  display:inline-flex;
+
+  align-items:center;
+
+  gap:4px;
+
+  border-radius:999px;
+
+  padding:5px 9px;
+
+  font-size:12px;
+
+  font-weight:700;
+
+}
+
+.b-red{
+
+  background:#ffe9e9;
+
+  color:#b83232;
+
+}
+
+.b-yellow{
+
+  background:#fff4d9;
+
+  color:#9b6500;
+
+}
+
+.b-green{
+
+  background:#eaf8ee;
+
+  color:#2e7b43;
+
+}
+
+.b-blue{
+
+  background:#e7f6fc;
+
+  color:#08739f;
+
+}
+
+.b-purple{
+
+  background:#eeeafd;
+
+  color:#624da5;
+
+}
+
+label{
+
+  display:block;
+
+  font-weight:700;
+
+  font-size:13px;
+
+  margin:13px 0 6px;
+
+}
+
+input,select,textarea{
+
+  width:100%;
+
+  min-height:48px;
+
+  border:1px solid #ccdbe4;
+
+  background:#fff;
+
+  border-radius:12px;
+
+  padding:11px 12px;
+
+  color:var(--navy);
+
+  outline:none;
+
+}
+
+textarea{
+
+  min-height:100px;
+
+  resize:vertical;
+
+}
+
+input:focus,
+
+select:focus,
+
+textarea:focus{
+
+  border-color:var(--blue);
+
+  box-shadow:0 0 0 3px rgba(11,143,199,.1);
+
+}
+
+.form-grid{
+
+  display:grid;
+
+  grid-template-columns:1fr 1fr;
+
+  gap:10px;
+
+}
+
+.checkgrid{
+
+  display:grid;
+
+  grid-template-columns:repeat(2,1fr);
+
+  gap:8px;
+
+}
+
+.check{
+
+  display:flex;
+
+  align-items:center;
+
+  gap:7px;
+
+  background:#f7fafc;
+
+  border:1px solid var(--line);
+
+  border-radius:11px;
+
+  padding:11px;
+
+  font-size:13px;
+
+  margin:0;
+
+  min-height:45px;
+
+}
+
+.check input{
+
+  width:auto;
+
+  min-height:auto;
+
+}
+
+.empty{
+
+  text-align:center;
+
+  padding:30px 12px;
+
+  color:var(--muted);
+
+}
+
+.bottom{
+
+  position:fixed;
+
+  left:0;
+
+  right:0;
+
+  bottom:0;
+
+  z-index:30;
+
+  background:rgba(255,255,255,.98);
+
+  backdrop-filter:blur(12px);
+
+  border-top:1px solid var(--line);
+
+  padding:7px 10px calc(7px + env(safe-area-inset-bottom));
+
+}
+
+.nav{
+
+  max-width:900px;
+
+  margin:auto;
+
+  display:grid;
+
+  grid-template-columns:repeat(4,1fr);
+
+  gap:5px;
+
+}
+
+.nav button{
+
+  background:none;
+
+  border:0;
+
+  color:#73818b;
+
+  padding:7px 4px;
+
+  min-height:58px;
+
+  border-radius:12px;
+
+  font-size:11px;
+
+}
+
+.nav button.active{
+
+  background:var(--blue2);
+
+  color:var(--blue);
+
+  font-weight:800;
+
+}
+
+.nav .ico{
+
+  display:block;
+
+  font-size:20px;
+
+  margin-bottom:3px;
+
+}
+
+.topic{
+
+  display:flex;
+
+  gap:10px;
+
+  align-items:center;
+
+  padding:10px 0;
+
+  border-bottom:1px solid #edf2f5;
+
+}
+
+.topic:last-child{
+
+  border-bottom:0;
+
+}
+
+.topic .bar{
+
+  flex:1;
+
+}
+
+.topic .bar .progress{
+
+  height:7px;
+
+  margin-top:5px;
+
+}
+
+.study-box{
+
+  background:linear-gradient(135deg,#fff,#f0f9fc);
+
+  border:1px solid #d7ebf2;
+
+  border-radius:18px;
+
+  padding:16px;
+
+  margin-bottom:12px;
+
+}
+
+.day-number{
+
+  font-size:34px;
+
+  font-weight:900;
+
+  color:var(--blue);
+
+  line-height:1;
+
+}
+
+.day-label{
+
+  font-size:12px;
+
+  color:var(--muted);
+
+  margin-top:3px;
+
+}
+
+.plan-title{
+
+  font-size:19px;
+
+  font-weight:800;
+
+  margin:10px 0 6px;
+
+}
+
+.plan-content{
+
+  line-height:1.7;
+
+  font-size:14px;
+
+}
+
+.plan-tip{
+
+  margin-top:12px;
+
+  background:#fff;
+
+  border-radius:12px;
+
+  padding:10px;
+
+  font-size:12px;
+
+  color:var(--muted);
+
+}
+
+.date-setting{
+
+  display:grid;
+
+  grid-template-columns:1fr auto;
+
+  gap:8px;
+
+  align-items:end;
+
+}
+
+.modal{
+
+  position:fixed;
+
+  inset:0;
+
+  background:rgba(12,32,48,.45);
+
+  display:none;
+
+  z-index:50;
+
+  padding:15px;
+
+  overflow:auto;
+
+}
+
+.modal.open{
+
+  display:block;
+
+}
+
+.modalbox{
+
+  max-width:720px;
+
+  margin:25px auto;
+
+  background:#fff;
+
+  border-radius:22px;
+
+  padding:18px;
+
+  box-shadow:0 20px 60px rgba(0,0,0,.2);
+
+}
+
+.modalhead{
+
+  display:flex;
+
+  justify-content:space-between;
+
+  gap:10px;
+
+  align-items:center;
+
+}
+
+.modalhead h2{
+
+  font-size:20px;
+
+  margin:0;
+
+}
+
+.close{
+
+  border:0;
+
+  background:#eef3f6;
+
+  border-radius:50%;
+
+  width:42px;
+
+  height:42px;
+
+}
+
+.toast{
+
+  position:fixed;
+
+  left:50%;
+
+  bottom:100px;
+
+  transform:translateX(-50%) translateY(15px);
+
+  background:#17324d;
+
+  color:#fff;
+
+  border-radius:999px;
+
+  padding:11px 17px;
+
+  font-size:13px;
+
+  opacity:0;
+
+  pointer-events:none;
+
+  transition:.25s;
+
+  z-index:100;
+
+  white-space:nowrap;
+
+}
+
+.toast.show{
+
+  opacity:1;
+
+  transform:translateX(-50%) translateY(0);
+
+}
+
+.danger-note{
+
+  background:#fff6f6;
+
+  border:1px solid #ffd4d4;
+
+  color:#9e3535;
+
+  border-radius:12px;
+
+  padding:11px;
+
+  font-size:12px;
+
+}
+
+.version-card{
+
+  text-align:center;
+
+  padding:20px;
+
+}
+
+.version-big{
+
+  font-size:28px;
+
+  font-weight:900;
+
+  color:var(--blue);
+
+  margin:6px 0;
+
+}
+
+@media(max-width:620px){
+
+  .stats{
+
+    grid-template-columns:repeat(2,1fr);
+
+  }
+
+  .grid,
+
+  .form-grid{
+
+    grid-template-columns:1fr;
+
+  }
+
+  .checkgrid{
+
+    grid-template-columns:1fr 1fr;
+
+  }
+
+  main{
+
+    padding:12px;
+
+  }
+
+  .hero{
+
+    padding:18px;
+
+  }
+
+  .brand h1{
+
+    font-size:15px;
+
+  }
+
+  .version{
+
+    font-size:10px;
+
+    padding:5px 7px;
+
+  }
+
+  .modal{
+
+    padding:0;
+
+  }
+
+  .modalbox{
+
+    margin:0;
+
+    min-height:100%;
+
+    border-radius:0;
+
+    padding:18px 15px calc(30px + env(safe-area-inset-bottom));
+
+  }
+
+  .date-setting{
+
+    grid-template-columns:1fr;
+
+  }
+
+}
+
+</style>
+
 </head>
+
 <body>
+
 <header class="top">
+
   <div class="brand">
+
     <div class="heart">♥</div>
-    <div><h1>心電図検定3級｜間違いノート</h1><small>「間違えた」を「できる」に変える</small></div>
+
+    <div class="brand-main">
+
+      <h1>心電図検定3級｜間違いノート</h1>
+
+      <small>「間違えた」を「できる」に変える</small>
+
+    </div>
+
+    <div class="version">v2.0.0</div>
+
   </div>
+
 </header>
 
 <main>
-  <section id="home" class="view active">
-    <div class="hero">
-      <h2>🫀 今日の心電図学習</h2>
-      <p>間違えた問題を、忘れる前にもう一度。</p>
-      <div class="stats">
-        <div class="stat"><b id="sToday">0</b><span>今日の復習</span></div>
-        <div class="stat"><b id="sAll">0</b><span>登録ミス</span></div>
-        <div class="stat"><b id="sMastered">0</b><span>克服済み</span></div>
-        <div class="stat"><b id="sRate">0%</b><span>克服率</span></div>
+
+<!-- ================= HOME ================= -->
+
+<section id="home" class="view active">
+
+  <div class="hero">
+
+    <h2>🫀 今日の心電図学習</h2>
+
+    <p id="heroMessage">
+
+      今日やる勉強を確認しましょう。
+
+    </p>
+
+    <div class="stats">
+
+      <div class="stat">
+
+        <b id="sToday">0</b>
+
+        <span>今日の復習</span>
+
       </div>
-    </div>
-    <div class="actions" style="margin-bottom:14px">
-      <button class="btn primary" onclick="openAdd()">＋ 間違いを記録</button>
-      <button class="btn secondary" onclick="showView('review')">🔄 今日の復習</button>
-    </div>
-    <div class="section-title"><h2>📅 今日やること</h2></div>
-    <div id="homeReview"></div>
-    <div id="studyPlanBox"></div>
-    <div class="section-title"><h2>📚 Part別の進み具合</h2></div>
-    <div class="card" id="partProgress"></div>
-    <div class="section-title"><h2>⚠️ 苦手分野</h2></div>
-    <div class="card" id="weakTopics"></div>
-  </section>
 
-  <section id="mistakes" class="view">
-    <div class="section-title"><h2>❌ 間違いノート</h2><button class="btn primary small" onclick="openAdd()">＋ 追加</button></div>
-    <div class="card">
-      <input id="search" placeholder="🔎 問題番号・疾患名・メモを検索" oninput="renderMistakes()">
-    </div>
-    <div id="mistakeList" class="mistake-list"></div>
-  </section>
+      <div class="stat">
 
-  <section id="review" class="view">
-    <div class="section-title"><h2>🔄 復習</h2></div>
-    <div class="card">
-      <h3>忘却曲線ルート</h3>
-      <p class="muted">記録 → 1日後 → 3日後 → 7日後 → 14日後 → 30日後</p>
-      <div id="reviewSummary"></div>
-    </div>
-    <div id="reviewList" class="review-list"></div>
-  </section>
+        <b id="sAll">0</b>
 
-  <section id="stats" class="view">
-    <div class="section-title"><h2>📊 学習状況</h2></div>
-    <div class="grid">
-      <div class="card"><h3>登録問題</h3><div style="font-size:32px;font-weight:800" id="statAll">0</div></div>
-      <div class="card"><h3>克服済み</h3><div style="font-size:32px;font-weight:800" id="statMastered">0</div></div>
-    </div>
-    <div class="section-title"><h2>Part別</h2></div>
-    <div class="card" id="statsParts"></div>
-    <div class="section-title"><h2>テーマ別</h2></div>
-    <div class="card" id="statsTopics"></div>
-    <div class="section-title"><h2>💾 データ</h2></div>
-    <div class="card">
-      <p class="muted">データはこのWebアプリのブラウザ保存領域に保存します。機種変更などに備えて定期的にバックアップしてください。</p>
-      <div class="actions">
-        <button class="btn secondary" onclick="exportData()">⬇️ バックアップ</button>
-        <label class="btn ghost" style="display:inline-block;margin:0;cursor:pointer">⬆️ 復元<input type="file" accept=".json" style="display:none" onchange="importData(event)"></label>
-        <button class="btn danger" onclick="resetAll()">全データ削除</button>
+        <span>登録ミス</span>
+
       </div>
+
+      <div class="stat">
+
+        <b id="sMastered">0</b>
+
+        <span>克服済み</span>
+
+      </div>
+
+      <div class="stat">
+
+        <b id="sRate">0%</b>
+
+        <span>克服率</span>
+
+      </div>
+
     </div>
-  </section>
+
+  </div>
+
+  <div class="actions" style="margin-bottom:14px">
+
+    <button class="btn primary" onclick="openAdd()">
+
+      ＋ 間違いを記録
+
+    </button>
+
+    <button class="btn secondary" onclick="showView('review')">
+
+      🔄 今日の復習
+
+    </button>
+
+  </div>
+
+  <div class="section-title">
+
+    <h2>📚 今日やる勉強</h2>
+
+  </div>
+
+  <div id="todayStudy"></div>
+
+  <div class="section-title">
+
+    <h2>📅 今日の復習</h2>
+
+  </div>
+
+  <div id="homeReview"></div>
+
+  <div class="section-title">
+
+    <h2>📚 Part別の進み具合</h2>
+
+  </div>
+
+  <div class="card" id="partProgress"></div>
+
+  <div class="section-title">
+
+    <h2>⚠️ 苦手分野</h2>
+
+  </div>
+
+  <div class="card" id="weakTopics"></div>
+
+</section>
+
+<!-- ================= MISTAKES ================= -->
+
+<section id="mistakes" class="view">
+
+  <div class="section-title">
+
+    <h2>❌ 間違いノート</h2>
+
+    <button class="btn primary small" onclick="openAdd()">
+
+      ＋ 追加
+
+    </button>
+
+  </div>
+
+  <div class="card">
+
+    <input
+
+      id="search"
+
+      placeholder="🔎 問題番号・疾患名・メモを検索"
+
+      oninput="renderMistakes()"
+
+    >
+
+  </div>
+
+  <div id="mistakeList" class="mistake-list"></div>
+
+</section>
+
+<!-- ================= REVIEW ================= -->
+
+<section id="review" class="view">
+
+  <div class="section-title">
+
+    <h2>🔄 復習</h2>
+
+  </div>
+
+  <div class="card">
+
+    <h3>忘却曲線ルート</h3>
+
+    <p class="muted">
+
+      記録 → 1日後 → 3日後 → 7日後 → 14日後 → 30日後
+
+    </p>
+
+    <div id="reviewSummary"></div>
+
+  </div>
+
+  <div id="reviewList" class="review-list"></div>
+
+</section>
+
+<!-- ================= STATS ================= -->
+
+<section id="stats" class="view">
+
+  <div class="section-title">
+
+    <h2>📊 学習状況</h2>
+
+  </div>
+
+  <div class="grid">
+
+    <div class="card">
+
+      <h3>登録問題</h3>
+
+      <div
+
+        style="font-size:32px;font-weight:800"
+
+        id="statAll"
+
+      >0</div>
+
+    </div>
+
+    <div class="card">
+
+      <h3>克服済み</h3>
+
+      <div
+
+        style="font-size:32px;font-weight:800"
+
+        id="statMastered"
+
+      >0</div>
+
+    </div>
+
+  </div>
+
+  <div class="section-title">
+
+    <h2>📅 学習設定</h2>
+
+  </div>
+
+  <div class="card">
+
+    <p class="muted">
+
+      30日間の学習計画の開始日を設定します。
+
+    </p>
+
+    <label>学習開始日</label>
+
+    <div class="date-setting">
+
+      <input
+
+        id="studyStartInput"
+
+        type="date"
+
+      >
+
+      <button
+
+        class="btn primary"
+
+        onclick="saveStudyStart()"
+
+      >
+
+        保存
+
+      </button>
+
+    </div>
+
+    <div class="actions" style="margin-top:10px">
+
+      <button
+
+        class="btn secondary"
+
+        onclick="setTodayAsDay1()"
+
+      >
+
+        📅 今日をDay1にする
+
+      </button>
+
+    </div>
+
+  </div>
+
+  <div class="section-title">
+
+    <h2>Part別</h2>
+
+  </div>
+
+  <div class="card" id="statsParts"></div>
+
+  <div class="section-title">
+
+    <h2>テーマ別</h2>
+
+  </div>
+
+  <div class="card" id="statsTopics"></div>
+
+  <div class="section-title">
+
+    <h2>💾 データ</h2>
+
+  </div>
+
+  <div class="card">
+
+    <p class="muted">
+
+      バックアップには間違いノートと学習開始日が含まれます。
+
+      機種変更などに備えて定期的に保存してください。
+
+    </p>
+
+    <div class="actions">
+
+      <button
+
+        class="btn secondary"
+
+        onclick="exportData()"
+
+      >
+
+        ⬇️ バックアップ
+
+      </button>
+
+      <label
+
+        class="btn ghost"
+
+        style="display:inline-flex;align-items:center;margin:0;cursor:pointer"
+
+      >
+
+        ⬆️ 復元
+
+        <input
+
+          type="file"
+
+          accept=".json"
+
+          style="display:none"
+
+          onchange="importData(event)"
+
+        >
+
+      </label>
+
+      <button
+
+        class="btn danger"
+
+        onclick="resetAll()"
+
+      >
+
+        全データ削除
+
+      </button>
+
+    </div>
+
+  </div>
+
+  <div class="section-title">
+
+    <h2>ℹ️ アプリ情報</h2>
+
+  </div>
+
+  <div class="card version-card">
+
+    <div>心電図検定3級｜間違いノート</div>
+
+    <div class="version-big">
+
+      v2.0.0
+
+    </div>
+
+    <div class="muted">
+
+      30日学習計画・バックアップ・iPhone UI対応
+
+    </div>
+
+  </div>
+
+</section>
+
 </main>
 
+<!-- ================= NAV ================= -->
+
 <nav class="bottom">
+
   <div class="nav">
-    <button class="active" data-view="home" onclick="showView('home')"><span class="ico">🏠</span>ホーム</button>
-    <button data-view="mistakes" onclick="showView('mistakes')"><span class="ico">❌</span>間違い</button>
-    <button data-view="review" onclick="showView('review')"><span class="ico">🔄</span>復習</button>
-    <button data-view="stats" onclick="showView('stats')"><span class="ico">📊</span>分析</button>
+
+    <button
+
+      class="active"
+
+      data-view="home"
+
+      onclick="showView('home')"
+
+    >
+
+      <span class="ico">🏠</span>
+
+      ホーム
+
+    </button>
+
+    <button
+
+      data-view="mistakes"
+
+      onclick="showView('mistakes')"
+
+    >
+
+      <span class="ico">❌</span>
+
+      間違い
+
+    </button>
+
+    <button
+
+      data-view="review"
+
+      onclick="showView('review')"
+
+    >
+
+      <span class="ico">🔄</span>
+
+      復習
+
+    </button>
+
+    <button
+
+      data-view="stats"
+
+      onclick="showView('stats')"
+
+    >
+
+      <span class="ico">📊</span>
+
+      分析
+
+    </button>
+
   </div>
+
 </nav>
 
-<div id="modal" class="modal" onclick="if(event.target===this)closeModal()">
+<!-- ================= MODAL ================= -->
+
+<div
+
+  id="modal"
+
+  class="modal"
+
+  onclick="if(event.target===this)closeModal()"
+
+>
+
   <div class="modalbox">
-    <div class="modalhead"><h2 id="modalTitle">間違いを記録</h2><button class="close" onclick="closeModal()">✕</button></div>
-    <form id="mistakeForm" onsubmit="saveMistake(event)">
-      <input type="hidden" id="editId">
+
+    <div class="modalhead">
+
+      <h2 id="modalTitle">
+
+        間違いを記録
+
+      </h2>
+
+      <button
+
+        class="close"
+
+        onclick="closeModal()"
+
+      >
+
+        ✕
+
+      </button>
+
+    </div>
+
+    <form
+
+      id="mistakeForm"
+
+      onsubmit="saveMistake(event)"
+
+    >
+
+      <input
+
+        type="hidden"
+
+        id="editId"
+
+      >
+
       <div class="form-grid">
-        <div><label>Part</label><select id="part" required>
-          <option value="Part1">Part1｜ルーティン10問</option>
-          <option value="Part2">Part2｜とことん練習100問</option>
-          <option value="Part3">Part3｜本番想定・実力テスト50問</option>
-          <option value="Part4">Part4｜1級をのぞき見10問</option>
-        </select></div>
-        <div><label>問題番号</label><input id="qno" placeholder="例：Q23" required></div>
+
+        <div>
+
+          <label>Part</label>
+
+          <select id="part" required>
+
+            <option value="Part1">
+
+              Part1｜ルーティン10問
+
+            </option>
+
+            <option value="Part2">
+
+              Part2｜とことん練習100問
+
+            </option>
+
+            <option value="Part3">
+
+              Part3｜本番想定・実力テスト50問
+
+            </option>
+
+            <option value="Part4">
+
+              Part4｜1級をのぞき見10問
+
+            </option>
+
+          </select>
+
+        </div>
+
+        <div>
+
+          <label>問題番号</label>
+
+          <input
+
+            id="qno"
+
+            placeholder="例：Q23"
+
+            required
+
+          >
+
+        </div>
+
       </div>
+
       <div class="form-grid">
-        <div><label>出題日</label><input id="date" type="date" required></div>
-        <div><label>参考書ページ</label><input id="page" placeholder="例：P.42"></div>
+
+        <div>
+
+          <label>出題日</label>
+
+          <input
+
+            id="date"
+
+            type="date"
+
+            required
+
+          >
+
+        </div>
+
+        <div>
+
+          <label>参考書ページ</label>
+
+          <input
+
+            id="page"
+
+            placeholder="例：P.42"
+
+          >
+
+        </div>
+
       </div>
+
       <label>テーマ</label>
+
       <select id="topic" required></select>
-      <label>自分の答え</label><input id="wrong" placeholder="例：心房細動">
-      <label>正解</label><input id="correct" placeholder="例：心房粗動" required>
-      <label>なぜ間違えた？</label><textarea id="reason" placeholder="例：鋸歯状波を見落とした"></textarea>
-      <label>正しい知識・見分け方</label><textarea id="knowledge" placeholder="例：心房粗動は鋸歯状波が特徴。RRやP波との違いも確認。"></textarea>
-      <label>自分への一言</label><input id="memo" placeholder="例：AFとAFLをもう一度比較する">
-      <label>該当するポイント（複数OK）</label>
-      <div class="checkgrid" id="checks"></div>
-      <div class="actions" style="margin-top:16px">
-        <button type="submit" class="btn primary">保存する</button>
-        <button type="button" class="btn ghost" onclick="closeModal()">キャンセル</button>
+
+      <label>自分の答え</label>
+
+      <input
+
+        id="wrong"
+
+        placeholder="例：心房細動"
+
+      >
+
+      <label>正解</label>
+
+      <input
+
+        id="correct"
+
+        placeholder="例：心房粗動"
+
+        required
+
+      >
+
+      <label>なぜ間違えた？</label>
+
+      <textarea
+
+        id="reason"
+
+        placeholder="例：鋸歯状波を見落とした"
+
+      ></textarea>
+
+      <label>正しい知識・見分け方</label>
+
+      <textarea
+
+        id="knowledge"
+
+        placeholder="例：心房粗動は鋸歯状波が特徴。"
+
+      ></textarea>
+
+      <label>自分への一言</label>
+
+      <input
+
+        id="memo"
+
+        placeholder="例：AFとAFLをもう一度比較する"
+
+      >
+
+      <label>
+
+        該当するポイント（複数OK）
+
+      </label>
+
+      <div
+
+        class="checkgrid"
+
+        id="checks"
+
+      ></div>
+
+      <div
+
+        class="actions"
+
+        style="margin-top:16px"
+
+      >
+
+        <button
+
+          type="submit"
+
+          class="btn primary"
+
+        >
+
+          保存する
+
+        </button>
+
+        <button
+
+          type="button"
+
+          class="btn ghost"
+
+          onclick="closeModal()"
+
+        >
+
+          キャンセル
+
+        </button>
+
       </div>
+
     </form>
+
   </div>
+
 </div>
 
 <div id="toast" class="toast"></div>
 
 <script>
 
-const KEY="ecg3_mistakes_v1";
+/* =====================================================
 
-const START_KEY="ecg3_study_start_v1";
+   基本設定
 
-const topics=[
+===================================================== */
 
- "心臓の解剖・構造・役割","心電図検査の目的","心電図を読み解くルール",
+const APP_VERSION = "v2.0.0";
 
- "正常洞調律","左右付け間違い・右胸心","心房負荷・心室負荷",
+const KEY = "ecg3_mistakes_v1";
 
- "PAC・PVCなど期外収縮","脚ブロック","房室ブロック","洞不全症候群",
+const STUDY_KEY = "ecg3_study_start_date_v1";
 
- "心房細動・心房粗動・PSVT","心筋梗塞","虚血・ST-T変化","たこつぼ症候群",
+/* =====================================================
 
- "急性肺血栓塞栓症","心膜炎","低電位・高電位","左室肥大・右室肥大",
+   テーマ
 
- "WPW症候群","QT延長・QT短縮","高K・低K血症","Brugada症候群",
+===================================================== */
 
- "早期再分極症候群","ペースメーカー","その他"
+const topics = [
+
+ "心臓の解剖・構造・役割",
+
+ "心電図検査の目的",
+
+ "心電図を読み解くルール",
+
+ "正常洞調律",
+
+ "左右付け間違い・右胸心",
+
+ "心房負荷・心室負荷",
+
+ "PAC・PVCなど期外収縮",
+
+ "脚ブロック",
+
+ "房室ブロック",
+
+ "洞不全症候群",
+
+ "心房細動・心房粗動・PSVT",
+
+ "心筋梗塞",
+
+ "虚血・ST-T変化",
+
+ "たこつぼ症候群",
+
+ "急性肺血栓塞栓症",
+
+ "心膜炎",
+
+ "低電位・高電位",
+
+ "左室肥大・右室肥大",
+
+ "WPW症候群",
+
+ "QT延長・QT短縮",
+
+ "高K・低K血症",
+
+ "Brugada症候群",
+
+ "早期再分極症候群",
+
+ "ペースメーカー",
+
+ "その他"
 
 ];
 
-const points=[
+const points = [
 
- "P波","QRS波","T波","PR間隔","QRS幅",
+ "P波",
 
- "QT間隔","RR間隔","ST・T","リズム","その他"
+ "QRS波",
+
+ "T波",
+
+ "PR間隔",
+
+ "QRS幅",
+
+ "QT間隔",
+
+ "RR間隔",
+
+ "ST・T",
+
+ "リズム",
+
+ "その他"
 
 ];
 
-const intervals=[1,3,7,14,30];
+const intervals = [1,3,7,14,30];
 
-/* =========================
+/* =====================================================
 
-   30日学習プラン
+   30日学習計画
 
-========================= */
+===================================================== */
 
-const studyPlan=[
+const studyPlan = [
 
  {
 
-  day:1,
+  title:"心電図の基本①",
 
-  title:"心電図の基礎",
+  content:"心臓の解剖・刺激伝導系を確認。SA結節→AV結節→His束→脚→Purkinje線維の流れを説明できるようにする。",
 
-  topic:"心臓の解剖・構造・役割",
-
-  content:"心房・心室・弁・刺激伝導系の位置関係を確認。洞結節→房室結節→His束→脚→Purkinje線維の流れを覚える。",
-
-  task:"参考書の基礎部分を読み、刺激伝導系を自分で説明する。"
+  tip:"まず「電気がどこからどこへ流れるか」を図で確認。"
 
  },
 
  {
 
-  day:2,
+  title:"心電図の基本②",
 
-  title:"心電図検査の目的",
+  content:"P波・QRS波・T波が何を表しているのかを整理する。",
 
-  topic:"心電図検査の目的",
-
-  content:"12誘導心電図の意味、各誘導が心臓のどの方向を見ているかを確認。",
-
-  task:"12誘導の名前と特徴を整理する。"
+  tip:"P＝心房、QRS＝心室、T＝心室の再分極をセットで覚える。"
 
  },
 
  {
 
-  day:3,
+  title:"心電図の基本③",
 
-  title:"心電図を読む順番",
+  content:"PR間隔・QRS幅・QT間隔・RR間隔の意味と正常値を確認する。",
 
-  topic:"心電図を読み解くルール",
-
-  content:"心拍数→リズム→P波→PR間隔→QRS→ST→T波→QTの順番で見る習慣を作る。",
-
-  task:"心電図を読む順番を何も見ずに言えるようにする。"
+  tip:"数字だけでなく「何を表している時間なのか」を覚える。"
 
  },
 
  {
 
-  day:4,
+  title:"心電図の基本④",
+
+  content:"心電図を読む順番を決める。心拍数→リズム→P波→PR→QRS→ST-Tの順で確認。",
+
+  tip:"読む順番を毎回固定すると見落としが減る。"
+
+ },
+
+ {
 
   title:"正常洞調律",
 
-  topic:"正常洞調律",
+  content:"正常洞調律の条件を整理し、正常心電図を見て各波形を確認する。",
 
-  content:"正常なP波、PR間隔、QRS幅、RR間隔を確認。",
-
-  task:"正常心電図の特徴を5つ説明する。"
+  tip:"「P波→QRS」の関係を必ず確認。"
 
  },
 
  {
 
-  day:5,
+  title:"心拍数・リズム",
 
-  title:"P波を読む",
+  content:"RR間隔から心拍数を求める方法と、規則正しい・不規則の判断を練習する。",
 
-  topic:"P波",
-
-  content:"P波の形・幅・高さと、心房の興奮について確認。",
-
-  task:"P波異常から考えられる疾患を整理する。"
+  tip:"まずRR間隔の規則性を見る。"
 
  },
 
  {
 
-  day:6,
+  title:"PAC",
 
-  title:"PR間隔",
+  content:"心房性期外収縮（PAC）の特徴を確認。早期P波、QRSなどの特徴を整理。",
 
-  topic:"PR間隔",
-
-  content:"PR間隔の意味と延長・短縮の原因を確認。",
-
-  task:"房室伝導について説明する。"
+  tip:"正常洞調律との違いを比較する。"
 
  },
 
  {
 
-  day:7,
+  title:"PVC",
 
-  title:"QRS波",
+  content:"心室性期外収縮（PVC）の特徴を確認。幅広いQRSや代償性休止などを整理。",
 
-  topic:"QRS波",
-
-  content:"QRS幅と心室興奮の関係を確認。狭いQRSと広いQRSを比較。",
-
-  task:"QRS幅の正常値と異常の意味を覚える。"
+  tip:"PACとPVCを並べて比較する。"
 
  },
 
  {
-
-  day:8,
 
   title:"脚ブロック",
 
-  topic:"脚ブロック",
+  content:"右脚ブロック・左脚ブロックの特徴を確認し、QRS幅とV1・V6などの誘導を見る。",
 
-  content:"右脚ブロック・左脚ブロックの特徴を比較。",
-
-  task:"RBBBとLBBBの違いを表にする。"
+  tip:"右脚・左脚の違いを表にして覚える。"
 
  },
 
  {
-
-  day:9,
-
-  title:"PAC・PVC",
-
-  topic:"PAC・PVCなど期外収縮",
-
-  content:"上室性期外収縮と心室性期外収縮の違いを確認。",
-
-  task:"PACとPVCを心電図だけで見分ける練習。"
-
- },
-
- {
-
-  day:10,
 
   title:"房室ブロック",
 
-  topic:"房室ブロック",
+  content:"Ⅰ度・Ⅱ度・Ⅲ度房室ブロックの違いを確認する。",
 
-  content:"Ⅰ度、Ⅱ度、Ⅲ度房室ブロックの特徴を確認。",
-
-  task:"MobitzⅠ・MobitzⅡ・完全房室ブロックを比較する。"
+  tip:"PR延長、脱落、房室解離を区別する。"
 
  },
 
  {
 
-  day:11,
+  title:"洞不全症候群",
+
+  content:"洞性徐脈、洞停止、洞房ブロックなど洞結節機能異常について整理する。",
+
+  tip:"「洞結節からの刺激がどうなっているか」で考える。"
+
+ },
+
+ {
 
   title:"心房細動",
 
-  topic:"心房細動・心房粗動・PSVT",
+  content:"AFの特徴を確認。P波消失、細動波、RR間隔不整などを覚える。",
 
-  content:"AFの特徴である不規則なRR間隔やP波消失を確認。",
-
-  task:"AFの心電図所見を説明する。"
+  tip:"「絶対的不整脈」を意識する。"
 
  },
 
  {
-
-  day:12,
 
   title:"心房粗動・PSVT",
 
-  topic:"心房細動・心房粗動・PSVT",
+  content:"心房粗動の鋸歯状波とPSVTの頻拍を確認し、AFとの違いを整理する。",
 
-  content:"鋸歯状波とPSVTの規則的な頻拍を確認。",
-
-  task:"AF・AFL・PSVTの違いを整理する。"
+  tip:"AF・AFL・PSVTを比較して覚える。"
 
  },
 
  {
 
-  day:13,
+  title:"心筋梗塞①",
 
-  title:"心房負荷",
+  content:"ST上昇・異常Q波・T波変化など急性心筋梗塞の基本的変化を確認する。",
 
-  topic:"心房負荷・心室負荷",
-
-  content:"右房負荷・左房負荷のP波変化を確認。",
-
-  task:"P pulmonale、P mitraleを整理する。"
+  tip:"ST変化を見る誘導と責任冠動脈を意識する。"
 
  },
 
  {
 
-  day:14,
+  title:"心筋梗塞②",
 
-  title:"心室肥大",
+  content:"前壁・下壁など梗塞部位と関連誘導について整理する。",
 
-  topic:"左室肥大・右室肥大",
-
-  content:"左室肥大・右室肥大の心電図所見を確認。",
-
-  task:"代表的な電位基準を確認する。"
+  tip:"誘導の位置関係を心臓の図と一緒に確認。"
 
  },
 
  {
 
-  day:15,
+  title:"虚血・ST-T変化",
 
-  title:"虚血",
+  content:"ST低下・ST上昇・陰性T波など虚血性変化の基本を確認する。",
 
-  topic:"虚血・ST-T変化",
-
-  content:"ST低下・T波変化など虚血性変化を確認。",
-
-  task:"虚血を疑うST-T変化を整理する。"
+  tip:"「ST」と「T波」を別々に観察する。"
 
  },
 
  {
-
-  day:16,
-
-  title:"心筋梗塞",
-
-  topic:"心筋梗塞",
-
-  content:"ST上昇、異常Q波、T波変化と梗塞部位を確認。",
-
-  task:"前壁・下壁などの誘導対応を覚える。"
-
- },
-
- {
-
-  day:17,
-
-  title:"QT間隔",
-
-  topic:"QT延長・QT短縮",
-
-  content:"QT間隔と再分極、QT延長・短縮の意味を確認。",
-
-  task:"QT延長の原因を整理する。"
-
- },
-
- {
-
-  day:18,
-
-  title:"電解質異常",
-
-  topic:"高K・低K血症",
-
-  content:"高K血症・低K血症に特徴的なT波、U波などを確認。",
-
-  task:"高Kと低Kの心電図変化を比較する。"
-
- },
-
- {
-
-  day:19,
-
-  title:"WPW症候群",
-
-  topic:"WPW症候群",
-
-  content:"短いPR間隔、デルタ波、QRS幅について確認。",
-
-  task:"WPWの3つの特徴を覚える。"
-
- },
-
- {
-
-  day:20,
-
-  title:"Brugada症候群",
-
-  topic:"Brugada症候群",
-
-  content:"V1〜V3付近のST変化など特徴的な所見を確認。",
-
-  task:"Brugada型心電図の特徴を整理する。"
-
- },
-
- {
-
-  day:21,
-
-  title:"早期再分極",
-
-  topic:"早期再分極症候群",
-
-  content:"若年者にも見られる早期再分極の特徴を確認。",
-
-  task:"ST上昇との鑑別ポイントを整理する。"
-
- },
-
- {
-
-  day:22,
-
-  title:"低電位・高電位",
-
-  topic:"低電位・高電位",
-
-  content:"QRS電位の大きさと、その背景にある疾患を確認。",
-
-  task:"低電位・高電位の原因を整理する。"
-
- },
-
- {
-
-  day:23,
-
-  title:"肺血栓塞栓症",
-
-  topic:"急性肺血栓塞栓症",
-
-  content:"肺血栓塞栓症で見られる心電図変化を確認。",
-
-  task:"典型所見と、心電図だけでは診断できないことを確認する。"
-
- },
-
- {
-
-  day:24,
-
-  title:"心膜炎",
-
-  topic:"心膜炎",
-
-  content:"広範なST上昇やPR変化などを確認。",
-
-  task:"心筋梗塞との違いを整理する。"
-
- },
-
- {
-
-  day:25,
 
   title:"たこつぼ症候群",
 
-  topic:"たこつぼ症候群",
+  content:"たこつぼ症候群の特徴と心筋梗塞との鑑別ポイントを確認する。",
 
-  content:"心筋梗塞との鑑別を意識して心電図変化を確認。",
-
-  task:"特徴と鑑別ポイントを整理する。"
+  tip:"心電図だけで決めつけず臨床情報も意識。"
 
  },
 
  {
 
-  day:26,
+  title:"肺血栓塞栓症",
+
+  content:"急性肺血栓塞栓症で見られる心電図変化を確認する。",
+
+  tip:"典型例だけでなく非特異的変化もあることを覚える。"
+
+ },
+
+ {
+
+  title:"心膜炎",
+
+  content:"急性心膜炎に特徴的なST変化などを確認する。",
+
+  tip:"心筋梗塞とのST変化の違いを比較。"
+
+ },
+
+ {
+
+  title:"電位異常",
+
+  content:"低電位・高電位の定義と原因を整理する。",
+
+  tip:"体格、肺疾患、心筋肥大など原因とセットで覚える。"
+
+ },
+
+ {
+
+  title:"左室肥大・右室肥大",
+
+  content:"左室肥大・右室肥大の電位変化や関連する所見を確認する。",
+
+  tip:"電気軸や胸部誘導にも注目。"
+
+ },
+
+ {
+
+  title:"WPW症候群",
+
+  content:"WPW症候群の短いPR間隔・デルタ波・QRS幅などを確認する。",
+
+  tip:"副伝導路という言葉とセットで覚える。"
+
+ },
+
+ {
+
+  title:"QT延長・QT短縮",
+
+  content:"QT間隔の意味とQT延長・QT短縮の原因、注意点を確認する。",
+
+  tip:"薬剤や電解質異常との関係も確認。"
+
+ },
+
+ {
+
+  title:"高K・低K血症",
+
+  content:"高カリウム血症・低カリウム血症の心電図変化を整理する。",
+
+  tip:"高K＝尖ったT波、低K＝U波など特徴を比較。"
+
+ },
+
+ {
+
+  title:"Brugada症候群",
+
+  content:"Brugada症候群の特徴的なST変化とV1〜V3付近の誘導を確認する。",
+
+  tip:"右側胸部誘導に注目。"
+
+ },
+
+ {
+
+  title:"早期再分極症候群",
+
+  content:"早期再分極の心電図所見を確認し、ST上昇などとの違いを整理する。",
+
+  tip:"正常変異との関係も確認する。"
+
+ },
+
+ {
 
   title:"ペースメーカー",
 
-  topic:"ペースメーカー",
+  content:"ペースメーカー波形の基本とスパイク、捕捉などを確認する。",
 
-  content:"ペーシングスパイクと捕捉について確認。",
-
-  task:"ペースメーカー心電図の基本を覚える。"
+  tip:"スパイク→心筋の反応という順番で見る。"
 
  },
 
  {
-
-  day:27,
 
   title:"総復習①",
 
-  topic:"心電図を読み解くルール",
+  content:"Day1〜Day14の基本波形・リズム・不整脈をまとめて復習する。",
 
-  content:"これまで学んだ内容を使って複数の心電図を読む。",
-
-  task:"心拍数→リズム→P→PR→QRS→ST-T→QTの順に判読する。"
+  tip:"間違いノートから苦手問題を5問以上解き直す。"
 
  },
 
  {
-
-  day:28,
 
   title:"総復習②",
 
-  topic:"心房細動・心房粗動・PSVT",
+  content:"Day15〜Day28の疾患・ST-T変化・特殊心電図を総復習する。",
 
-  content:"不整脈を中心に総復習。",
-
-  task:"AF・AFL・PSVT・PAC・PVC・房室ブロックを比較する。"
+  tip:"似ている疾患を比較して整理する。"
 
  },
 
  {
 
-  day:29,
+  title:"30日目・実力確認",
 
-  title:"本番想定",
+  content:"これまでの学習内容を使って実力テスト。間違えた問題は間違いノートへ登録する。",
 
-  topic:"心電図を読み解くルール",
-
-  content:"時間を測って問題演習。分からない問題は間違いノートに登録。",
-
-  task:"本番を想定してまとめて問題を解く。"
-
- },
-
- {
-
-  day:30,
-
-  title:"最終確認",
-
-  topic:"苦手分野総復習",
-
-  content:"間違いノートを中心に弱点を総復習。",
-
-  task:"間違いノートから苦手な5問を選び、説明できる状態にする。"
+  tip:"最後は「なぜその答えになるか」を説明できるか確認。"
 
  }
 
 ];
 
-/* =========================
+/* =====================================================
 
-   基本処理
+   基本関数
 
-========================= */
+===================================================== */
 
 function load(){
 
   try{
 
-    const d=JSON.parse(localStorage.getItem(KEY)||"[]");
+    return JSON.parse(
 
-    return Array.isArray(d)?d:[];
+      localStorage.getItem(KEY) || "[]"
 
-  }catch(e){return []}
+    );
+
+  }catch(e){
+
+    return [];
+
+  }
 
 }
 
 function save(data){
 
-  localStorage.setItem(KEY,JSON.stringify(data));
+  localStorage.setItem(
+
+    KEY,
+
+    JSON.stringify(data)
+
+  );
 
 }
 
 function uid(){
 
-  return Date.now().toString(36)+Math.random().toString(36).slice(2);
+  return Date.now().toString(36)
+
+    + Math.random().toString(36).slice(2);
 
 }
 
 function today(){
 
-  return new Date().toISOString().slice(0,10);
+  return localDateString(new Date());
+
+}
+
+function localDateString(d){
+
+  let y=d.getFullYear();
+
+  let m=String(d.getMonth()+1).padStart(2,"0");
+
+  let day=String(d.getDate()).padStart(2,"0");
+
+  return `${y}-${m}-${day}`;
+
+}
+
+function parseDate(s){
+
+  return new Date(
+
+    s + "T12:00:00"
+
+  );
 
 }
 
 function addDays(s,n){
 
-  let d=new Date(s+"T12:00:00");
+  let d=parseDate(s);
 
-  d.setDate(d.getDate()+n);
+  d.setDate(
 
-  return d.toISOString().slice(0,10);
+    d.getDate()+n
+
+  );
+
+  return localDateString(d);
+
+}
+
+function diffDays(a,b){
+
+  let da=parseDate(a);
+
+  let db=parseDate(b);
+
+  return Math.floor(
+
+    (db-da)/86400000
+
+  );
 
 }
 
@@ -796,7 +2304,7 @@ function fmt(s){
 
   if(!s)return "-";
 
-  let d=new Date(s+"T12:00:00");
+  let d=parseDate(s);
 
   return `${d.getMonth()+1}/${d.getDate()}`;
 
@@ -804,19 +2312,27 @@ function fmt(s){
 
 function esc(s){
 
-  return String(s??"").replace(/[&<>"']/g,m=>({
+  return String(s ?? "")
 
-    "&":"&amp;",
+    .replace(
 
-    "<":"&lt;",
+      /[&<>"']/g,
 
-    ">":"&gt;",
+      m=>({
 
-    '"':"&quot;",
+        "&":"&amp;",
 
-    "'":"&#39;"
+        "<":"&lt;",
 
-  }[m]));
+        ">":"&gt;",
+
+        '"':"&quot;",
+
+        "'":"&#39;"
+
+      }[m])
+
+    );
 
 }
 
@@ -828,311 +2344,325 @@ function toast(t){
 
   x.classList.add("show");
 
-  setTimeout(()=>x.classList.remove("show"),1800);
+  setTimeout(
+
+    ()=>x.classList.remove("show"),
+
+    1800
+
+  );
 
 }
 
-/* =========================
+/* =====================================================
 
    学習開始日
 
-========================= */
+===================================================== */
 
 function getStudyStart(){
 
-  return localStorage.getItem(START_KEY)||"";
+  return localStorage.getItem(
+
+    STUDY_KEY
+
+  );
 
 }
 
 function setStudyStart(date){
 
-  localStorage.setItem(START_KEY,date);
+  localStorage.setItem(
 
-  renderAll();
+    STUDY_KEY,
 
-  toast("学習開始日を設定しました");
+    date
+
+  );
 
 }
 
 function getStudyDay(){
 
-  const start=getStudyStart();
+  let start=getStudyStart();
 
-  if(!start)return 0;
+  if(!start)return null;
 
-  const a=new Date(start+"T12:00:00");
+  return diffDays(
 
-  const b=new Date(today()+"T12:00:00");
+    start,
 
-  const diff=Math.floor((b-a)/86400000)+1;
+    today()
 
-  if(diff<1)return 1;
-
-  if(diff>30)return 30;
-
-  return diff;
+  ) + 1;
 
 }
 
 function getTodayPlan(){
 
-  const day=getStudyDay();
+  let day=getStudyDay();
 
-  return day?studyPlan[day-1]:null;
+  if(!day)return null;
 
-}
+  if(day<1)return null;
 
-function setTodayAsDay1(){
+  if(day>30){
 
-  setStudyStart(today());
+    return {
 
-}
+      day:day,
 
-function renderStudyPlan(){
+      completed:true,
 
-  const box=document.getElementById("studyPlanBox");
+      title:"30日間の学習完了！",
 
-  if(!box)return;
+      content:"30日間の学習計画を完了しました。今後は間違いノートと復習機能を使って苦手分野を繰り返しましょう。",
 
-  const start=getStudyStart();
+      tip:"新しく間違えた問題は、その日のうちに間違いノートへ登録しましょう。"
 
-  const plan=getTodayPlan();
-
-  if(!start){
-
-    box.innerHTML=`
-
-      <div class="card">
-
-        <h3>📚 30日学習プラン</h3>
-
-        <p class="muted">
-
-          学習開始日を設定すると、今日がDay1〜Day30のどこか自動判定します。
-
-        </p>
-
-        <button class="btn primary" onclick="setTodayAsDay1()">
-
-          🚀 今日をDay1にする
-
-        </button>
-
-      </div>
-
-    `;
-
-    return;
+    };
 
   }
 
-  const day=getStudyDay();
+  return {
 
-  box.innerHTML=`
+    day:day,
 
-    <div class="card study-card">
+    completed:false,
 
-      <div class="row">
+    ...studyPlan[day-1]
 
-        <div>
-
-          <span class="badge b-blue">DAY ${day}</span>
-
-          <span class="badge b-purple">${esc(plan.topic)}</span>
-
-        </div>
-
-        <button class="btn ghost small" onclick="setTodayAsDay1()">
-
-          今日をDay1にする
-
-        </button>
-
-      </div>
-
-      <h3 style="font-size:21px;margin-top:13px">
-
-        ${esc(plan.title)}
-
-      </h3>
-
-      <p style="line-height:1.7">
-
-        ${esc(plan.content)}
-
-      </p>
-
-      <div style="
-
-        background:#e8f7fc;
-
-        border-radius:14px;
-
-        padding:13px;
-
-        margin-top:12px;
-
-      ">
-
-        <b>📝 今日の勉強</b>
-
-        <div style="margin-top:5px;line-height:1.6">
-
-          ${esc(plan.task)}
-
-        </div>
-
-      </div>
-
-      <div style="margin-top:14px">
-
-        <div class="row">
-
-          <span class="muted">30日プラン</span>
-
-          <b>${day}/30</b>
-
-        </div>
-
-        <div class="progress" style="margin-top:6px">
-
-          <i style="width:${Math.round(day/30*100)}%"></i>
-
-        </div>
-
-      </div>
-
-      <p class="muted" style="margin-top:10px">
-
-        開始日：${fmt(start)}
-
-      </p>
-
-    </div>
-
-  `;
+  };
 
 }
 
-/* =========================
+/* =====================================================
 
    初期設定
 
-========================= */
+===================================================== */
 
 function setup(){
 
-  document.getElementById("topic").innerHTML=
+  document.getElementById("topic").innerHTML =
 
-    topics.map(x=>`<option>${esc(x)}</option>`).join("");
+    topics.map(
 
-  document.getElementById("checks").innerHTML=
+      x=>`<option>${esc(x)}</option>`
 
-    points.map(x=>`
+    ).join("");
+
+  document.getElementById("checks").innerHTML =
+
+    points.map(
+
+      x=>`
 
       <label class="check">
 
-        <input type="checkbox" value="${esc(x)}">
+        <input
+
+          type="checkbox"
+
+          value="${esc(x)}"
+
+        >
 
         ${esc(x)}
 
       </label>
 
-    `).join("");
+      `
+
+    ).join("");
 
   document.getElementById("date").value=today();
 
+  let start=getStudyStart();
+
+  document.getElementById(
+
+    "studyStartInput"
+
+  ).value=start || today();
+
   renderAll();
-
-  if("serviceWorker" in navigator){
-
-    navigator.serviceWorker.register("./sw.js").catch(()=>{});
-
-  }
 
 }
 
-/* =========================
+/* =====================================================
 
-   画面
+   View
 
-========================= */
+===================================================== */
 
 function showView(v){
 
-  document.querySelectorAll(".view")
+  document
 
-    .forEach(x=>x.classList.remove("active"));
+    .querySelectorAll(".view")
 
-  document.getElementById(v).classList.add("active");
+    .forEach(
 
-  document.querySelectorAll(".nav button")
+      x=>x.classList.remove("active")
 
-    .forEach(x=>x.classList.toggle(
+    );
 
-      "active",
+  document
 
-      x.dataset.view===v
+    .getElementById(v)
 
-    ));
+    .classList.add("active");
 
-  window.scrollTo({top:0,behavior:"smooth"});
+  document
+
+    .querySelectorAll(".nav button")
+
+    .forEach(
+
+      x=>x.classList.toggle(
+
+        "active",
+
+        x.dataset.view===v
+
+      )
+
+    );
+
+  window.scrollTo({
+
+    top:0,
+
+    behavior:"smooth"
+
+  });
 
   renderAll();
 
 }
 
-/* =========================
+/* =====================================================
 
-   モーダル
+   間違い登録
 
-========================= */
+===================================================== */
 
 function openAdd(id=null){
 
-  document.getElementById("modal").classList.add("open");
+  document
 
-  document.getElementById("modalTitle").textContent=
+    .getElementById("modal")
 
-    id?"間違いを編集":"間違いを記録";
+    .classList.add("open");
 
-  document.getElementById("mistakeForm").reset();
+  document
 
-  document.getElementById("editId").value=id||"";
+    .getElementById("modalTitle")
 
-  document.getElementById("date").value=today();
+    .textContent =
 
-  document.querySelectorAll("#checks input")
+      id
 
-    .forEach(x=>x.checked=false);
+      ? "間違いを編集"
+
+      : "間違いを記録";
+
+  document
+
+    .getElementById("mistakeForm")
+
+    .reset();
+
+  document
+
+    .getElementById("editId")
+
+    .value=id || "";
+
+  document
+
+    .getElementById("date")
+
+    .value=today();
+
+  document
+
+    .querySelectorAll("#checks input")
+
+    .forEach(
+
+      x=>x.checked=false
+
+    );
 
   if(id){
 
-    let m=load().find(x=>x.id===id);
+    let m=load()
+
+      .find(
+
+        x=>x.id===id
+
+      );
 
     if(!m)return;
 
     [
 
-      "part","qno","date","page","topic",
+      "part",
 
-      "wrong","correct","reason","knowledge","memo"
+      "qno",
+
+      "date",
+
+      "page",
+
+      "topic",
+
+      "wrong",
+
+      "correct",
+
+      "reason",
+
+      "knowledge",
+
+      "memo"
 
     ].forEach(k=>{
 
-      document.getElementById(k).value=m[k]||"";
+      document.getElementById(k)
+
+        .value=m[k] || "";
 
     });
 
-    (m.points||[]).forEach(p=>{
+    (m.points || [])
 
-      let el=[...document.querySelectorAll("#checks input")]
+      .forEach(p=>{
 
-        .find(x=>x.value===p);
+        let el=[
 
-      if(el)el.checked=true;
+          ...document
 
-    });
+            .querySelectorAll(
+
+              "#checks input"
+
+            )
+
+        ].find(
+
+          x=>x.value===p
+
+        );
+
+        if(el)
+
+          el.checked=true;
+
+      });
 
   }
 
@@ -1140,15 +2670,13 @@ function openAdd(id=null){
 
 function closeModal(){
 
-  document.getElementById("modal").classList.remove("open");
+  document
+
+    .getElementById("modal")
+
+    .classList.remove("open");
 
 }
-
-/* =========================
-
-   間違い登録
-
-========================= */
 
 function saveMistake(e){
 
@@ -1156,41 +2684,87 @@ function saveMistake(e){
 
   let data=load();
 
-  let id=document.getElementById("editId").value;
+  let id=
+
+    document
+
+      .getElementById("editId")
+
+      .value;
 
   let base={
 
-    part:part.value,
+    part:
 
-    qno:qno.value.trim(),
+      document.getElementById("part").value,
 
-    date:date.value,
+    qno:
 
-    page:page.value.trim(),
+      document.getElementById("qno").value.trim(),
 
-    topic:topic.value,
+    date:
 
-    wrong:wrong.value.trim(),
+      document.getElementById("date").value,
 
-    correct:correct.value.trim(),
+    page:
 
-    reason:reason.value.trim(),
+      document.getElementById("page").value.trim(),
 
-    knowledge:knowledge.value.trim(),
+    topic:
 
-    memo:memo.value.trim(),
+      document.getElementById("topic").value,
 
-    points:[...document.querySelectorAll("#checks input:checked")]
+    wrong:
 
-      .map(x=>x.value)
+      document.getElementById("wrong").value.trim(),
+
+    correct:
+
+      document.getElementById("correct").value.trim(),
+
+    reason:
+
+      document.getElementById("reason").value.trim(),
+
+    knowledge:
+
+      document.getElementById("knowledge").value.trim(),
+
+    memo:
+
+      document.getElementById("memo").value.trim(),
+
+    points:[
+
+      ...document.querySelectorAll(
+
+        "#checks input:checked"
+
+      )
+
+    ].map(x=>x.value)
 
   };
 
   if(id){
 
-    let old=data.find(x=>x.id===id);
+    let old=data.find(
 
-    if(old)Object.assign(old,base);
+      x=>x.id===id
+
+    );
+
+    if(old){
+
+      Object.assign(
+
+        old,
+
+        base
+
+      );
+
+    }
 
   }else{
 
@@ -1198,7 +2772,15 @@ function saveMistake(e){
 
     base.stage=0;
 
-    base.next=addDays(base.date,1);
+    base.next=
+
+      addDays(
+
+        base.date,
+
+        1
+
+      );
 
     base.reviews=[];
 
@@ -1212,39 +2794,315 @@ function saveMistake(e){
 
   renderAll();
 
-  toast(id?"更新しました":"記録しました");
+  toast(
 
-}
+    id
 
-/* =========================
+    ? "更新しました"
 
-   ホーム
-
-========================= */
-
-function renderAll(){
-
-  renderHome();
-
-  renderMistakes();
-
-  renderReview();
-
-  renderStats();
-
-  renderStudyPlan();
-
-}
-
-function getDue(){
-
-  return load().filter(
-
-    m=>m.stage<intervals.length && m.next<=today()
+    : "記録しました"
 
   );
 
 }
+
+/* =====================================================
+
+   復習
+
+===================================================== */
+
+function getDue(){
+
+  return load()
+
+    .filter(
+
+      m=>
+
+        m.stage<intervals.length &&
+
+        m.next &&
+
+        m.next<=today()
+
+    );
+
+}
+
+function reviewNow(id){
+
+  let data=load();
+
+  let m=data.find(
+
+    x=>x.id===id
+
+  );
+
+  if(!m)return;
+
+  if(m.stage<intervals.length){
+
+    m.stage++;
+
+  }
+
+  m.reviews=
+
+    m.reviews || [];
+
+  m.reviews.push(
+
+    today()
+
+  );
+
+  m.next=
+
+    m.stage>=intervals.length
+
+    ? null
+
+    : addDays(
+
+        today(),
+
+        intervals[m.stage]
+
+      );
+
+  save(data);
+
+  renderAll();
+
+  toast(
+
+    m.stage>=intervals.length
+
+    ? "🎉 克服済みにしました！"
+
+    : "復習を記録しました！"
+
+  );
+
+}
+
+function deleteMistake(id){
+
+  if(
+
+    !confirm(
+
+      "この記録を削除しますか？"
+
+    )
+
+  )return;
+
+  save(
+
+    load().filter(
+
+      x=>x.id!==id
+
+    )
+
+  );
+
+  renderAll();
+
+  toast("削除しました");
+
+}
+
+/* =====================================================
+
+   Item
+
+===================================================== */
+
+function itemHTML(m,compact=false){
+
+  let due=
+
+    m.stage>=intervals.length
+
+    ? "克服済み"
+
+    : (
+
+      m.next<=today()
+
+      ? "今日復習"
+
+      : "次回 "+fmt(m.next)
+
+    );
+
+  let badge=
+
+    m.stage>=intervals.length
+
+    ? "b-green"
+
+    : m.next<=today()
+
+    ? "b-red"
+
+    : "b-yellow";
+
+  return `
+
+  <div class="item">
+
+    <div class="row">
+
+      <div>
+
+        <span class="badge b-blue">
+
+          ${esc(m.part)}
+
+        </span>
+
+        <span class="badge ${badge}">
+
+          ${due}
+
+        </span>
+
+      </div>
+
+      <button
+
+        class="btn ghost small"
+
+        onclick="openAdd('${m.id}')"
+
+      >
+
+        編集
+
+      </button>
+
+    </div>
+
+    <div
+
+      style="font-weight:800;margin-top:8px"
+
+    >
+
+      ${esc(m.qno)}
+
+      ｜${esc(m.correct)}
+
+    </div>
+
+    <div
+
+      class="muted"
+
+      style="margin-top:4px"
+
+    >
+
+      ${esc(m.topic)}
+
+      ${m.page
+
+        ? " ・ "+esc(m.page)
+
+        : ""
+
+      }
+
+    </div>
+
+    ${
+
+      compact
+
+      ? ""
+
+      :
+
+      `
+
+      <div style="margin-top:9px">
+
+        <b>なぜ間違えた？</b>
+
+        <div>
+
+          ${esc(m.reason)||"—"}
+
+        </div>
+
+      </div>
+
+      <div style="margin-top:8px">
+
+        <b>正しい知識</b>
+
+        <div>
+
+          ${esc(m.knowledge)||"—"}
+
+        </div>
+
+      </div>
+
+      <div
+
+        class="actions"
+
+        style="margin-top:10px"
+
+      >
+
+        <button
+
+          class="btn secondary small"
+
+          onclick="reviewNow('${m.id}')"
+
+        >
+
+          🔄 復習できた
+
+        </button>
+
+        <button
+
+          class="btn danger small"
+
+          onclick="deleteMistake('${m.id}')"
+
+        >
+
+          削除
+
+        </button>
+
+      </div>
+
+      `
+
+    }
+
+  </div>
+
+  `;
+
+}
+
+/* =====================================================
+
+   Home
+
+===================================================== */
 
 function renderHome(){
 
@@ -1252,63 +3110,275 @@ function renderHome(){
 
   let due=getDue();
 
-  let mastered=data.filter(
+  let mastered=
 
-    x=>x.stage>=intervals.length
-
-  );
-
-  sToday.textContent=due.length;
-
-  sAll.textContent=data.length;
-
-  sMastered.textContent=mastered.length;
-
-  sRate.textContent=
-
-    data.length
-
-      ?Math.round(mastered.length/data.length*100)+"%"
-
-      :"0%";
-
-  homeReview.innerHTML=
-
-    due.length
-
-      ?due.slice(0,5).map(m=>itemHTML(m,true)).join("")
-
-      :`
-
-        <div class="card empty">
-
-          🎉 今日の復習はありません。<br>
-
-          新しい問題に挑戦しましょう！
-
-        </div>
-
-      `;
-
-  let parts=["Part1","Part2","Part3","Part4"];
-
-  partProgress.innerHTML=parts.map(p=>{
-
-    let a=data.filter(x=>x.part===p);
-
-    let done=a.filter(
+    data.filter(
 
       x=>x.stage>=intervals.length
 
-    ).length;
+    );
 
-    let pct=a.length
+  document.getElementById(
 
-      ?Math.round(done/a.length*100)
+    "sToday"
 
-      :0;
+  ).textContent=due.length;
 
-    return `
+  document.getElementById(
+
+    "sAll"
+
+  ).textContent=data.length;
+
+  document.getElementById(
+
+    "sMastered"
+
+  ).textContent=
+
+    mastered.length;
+
+  document.getElementById(
+
+    "sRate"
+
+  ).textContent=
+
+    data.length
+
+    ? Math.round(
+
+        mastered.length/
+
+        data.length*
+
+        100
+
+      )+"%"
+
+    : "0%";
+
+  /* 今日の勉強 */
+
+  let plan=getTodayPlan();
+
+  let todayStudy=
+
+    document.getElementById(
+
+      "todayStudy"
+
+    );
+
+  if(!plan){
+
+    todayStudy.innerHTML=`
+
+      <div class="study-box">
+
+        <div class="row">
+
+          <div>
+
+            <div
+
+              class="day-number"
+
+              style="font-size:25px"
+
+            >
+
+              START
+
+            </div>
+
+            <div class="day-label">
+
+              学習開始日を設定してください
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="plan-title">
+
+          📚 30日学習計画を始めよう
+
+        </div>
+
+        <div class="plan-content">
+
+          「分析」→「学習設定」から
+
+          学習開始日を設定できます。
+
+        </div>
+
+        <div class="actions" style="margin-top:12px">
+
+          <button
+
+            class="btn primary"
+
+            onclick="setTodayAsDay1()"
+
+          >
+
+            📅 今日をDay1にする
+
+          </button>
+
+        </div>
+
+      </div>
+
+    `;
+
+  }else{
+
+    todayStudy.innerHTML=`
+
+      <div class="study-box">
+
+        <div class="row">
+
+          <div>
+
+            <div class="day-number">
+
+              Day ${plan.day}
+
+            </div>
+
+            <div class="day-label">
+
+              30日学習計画
+
+            </div>
+
+          </div>
+
+          <span class="badge b-blue">
+
+            ${
+
+              plan.completed
+
+              ? "完了"
+
+              : "今日のテーマ"
+
+            }
+
+          </span>
+
+        </div>
+
+        <div class="plan-title">
+
+          ${esc(plan.title)}
+
+        </div>
+
+        <div class="plan-content">
+
+          ${esc(plan.content)}
+
+        </div>
+
+        <div class="plan-tip">
+
+          💡 ${esc(plan.tip)}
+
+        </div>
+
+      </div>
+
+    `;
+
+  }
+
+  /* 今日の復習 */
+
+  document.getElementById(
+
+    "homeReview"
+
+  ).innerHTML=
+
+    due.length
+
+    ? due
+
+        .slice(0,5)
+
+        .map(
+
+          m=>itemHTML(m,true)
+
+        )
+
+        .join("")
+
+    :
+
+    `<div class="card empty">
+
+      🎉 今日の復習はありません。<br>
+
+      新しい問題に挑戦しましょう！
+
+    </div>`;
+
+  /* Part */
+
+  let parts=[
+
+    "Part1",
+
+    "Part2",
+
+    "Part3",
+
+    "Part4"
+
+  ];
+
+  document.getElementById(
+
+    "partProgress"
+
+  ).innerHTML=
+
+    parts.map(p=>{
+
+      let a=data.filter(
+
+        x=>x.part===p
+
+      );
+
+      let done=a.filter(
+
+        x=>x.stage>=intervals.length
+
+      ).length;
+
+      let pct=
+
+        a.length
+
+        ? Math.round(
+
+            done/a.length*100
+
+          )
+
+        : 0;
+
+      return `
 
       <div class="topic">
 
@@ -1324,7 +3394,11 @@ function renderHome(){
 
           <div class="progress">
 
-            <i style="width:${pct}%"></i>
+            <i
+
+              style="width:${pct}%"
+
+            ></i>
 
           </div>
 
@@ -1334,357 +3408,283 @@ function renderHome(){
 
       </div>
 
-    `;
+      `;
 
-  }).join("");
+    }).join("");
+
+  /* 苦手 */
 
   let counts={};
 
   data.forEach(m=>{
 
-    counts[m.topic]=(counts[m.topic]||0)+1;
+    counts[m.topic]=
+
+      (counts[m.topic]||0)+1;
 
   });
 
-  let arr=Object.entries(counts)
+  let arr=
 
-    .sort((a,b)=>b[1]-a[1])
+    Object.entries(counts)
 
-    .slice(0,5);
+      .sort(
 
-  weakTopics.innerHTML=
+        (a,b)=>b[1]-a[1]
+
+      )
+
+      .slice(0,5);
+
+  document.getElementById(
+
+    "weakTopics"
+
+  ).innerHTML=
 
     arr.length
 
-      ?arr.map(([t,n])=>`
+    ? arr.map(
 
-        <div class="row" style="padding:8px 0">
+        ([t,n])=>`
+
+        <div
+
+          class="row"
+
+          style="padding:8px 0"
+
+        >
 
           <span>${esc(t)}</span>
 
-          <span class="badge b-red">${n}件</span>
+          <span class="badge b-red">
 
-        </div>
-
-      `).join("")
-
-      :`<div class="empty">まだ記録がありません。</div>`;
-
-}
-
-/* =========================
-
-   アイテム
-
-========================= */
-
-function itemHTML(m,compact=false){
-
-  let due=
-
-    m.stage>=intervals.length
-
-      ?"克服済み"
-
-      :(m.next<=today()
-
-        ?"今日復習"
-
-        :"次回 "+fmt(m.next));
-
-  let badge=
-
-    m.stage>=intervals.length
-
-      ?"b-green"
-
-      :m.next<=today()
-
-        ?"b-red"
-
-        :"b-yellow";
-
-  return `
-
-    <div class="item">
-
-      <div class="row">
-
-        <div>
-
-          <span class="badge b-blue">
-
-            ${esc(m.part)}
-
-          </span>
-
-          <span class="badge ${badge}">
-
-            ${due}
+            ${n}件
 
           </span>
 
         </div>
 
-        <button
+        `
 
-          class="btn ghost small"
+      ).join("")
 
-          onclick="openAdd('${m.id}')">
+    :
 
-          編集
+    `<div class="empty">
 
-        </button>
+      まだ記録がありません。
 
-      </div>
-
-      <div style="font-weight:800;margin-top:8px">
-
-        ${esc(m.qno)}｜${esc(m.correct)}
-
-      </div>
-
-      <div class="muted" style="margin-top:4px">
-
-        ${esc(m.topic)}
-
-        ${m.page?" ・ "+esc(m.page):""}
-
-      </div>
-
-      ${
-
-        compact
-
-          ?""
-
-          :`
-
-            <div style="margin-top:9px">
-
-              <b>なぜ間違えた？</b>
-
-              <div>${esc(m.reason)||"—"}</div>
-
-            </div>
-
-            <div style="margin-top:8px">
-
-              <b>正しい知識</b>
-
-              <div>${esc(m.knowledge)||"—"}</div>
-
-            </div>
-
-            <div class="actions" style="margin-top:10px">
-
-              <button
-
-                class="btn secondary small"
-
-                onclick="reviewNow('${m.id}')">
-
-                🔄 復習できた
-
-              </button>
-
-              <button
-
-                class="btn danger small"
-
-                onclick="deleteMistake('${m.id}')">
-
-                削除
-
-              </button>
-
-            </div>
-
-          `
-
-      }
-
-    </div>
-
-  `;
+    </div>`;
 
 }
 
-/* =========================
+/* =====================================================
 
-   間違い一覧
+   Mistakes
 
-========================= */
+===================================================== */
 
 function renderMistakes(){
 
   let q=
 
-    (document.getElementById("search")?.value||"")
+    (
 
-    .toLowerCase();
+      document
 
-  let data=load().filter(
+        .getElementById("search")
 
-    m=>JSON.stringify(m)
+        ?.value
 
-      .toLowerCase()
+      || ""
 
-      .includes(q)
+    ).toLowerCase();
 
-  );
+  let data=
 
-  mistakeList.innerHTML=
+    load().filter(
+
+      m=>
+
+        JSON.stringify(m)
+
+          .toLowerCase()
+
+          .includes(q)
+
+    );
+
+  document.getElementById(
+
+    "mistakeList"
+
+  ).innerHTML=
 
     data.length
 
-      ?data.map(m=>itemHTML(m)).join("")
+    ? data
 
-      :`
+        .map(m=>itemHTML(m))
 
-        <div class="card empty">
+        .join("")
 
-          まだ間違いノートがありません。<br>
+    :
 
-          「＋追加」から1問登録してみましょう。
+    `<div class="card empty">
 
-        </div>
+      まだ間違いノートがありません。<br>
 
-      `;
+      「＋追加」から1問登録してみましょう。
+
+    </div>`;
 
 }
 
-/* =========================
+/* =====================================================
 
-   復習
+   Review
 
-========================= */
+===================================================== */
 
 function renderReview(){
 
   let due=getDue();
 
-  reviewSummary.innerHTML=`
+  document.getElementById(
+
+    "reviewSummary"
+
+  ).innerHTML=`
 
     <div class="row">
 
       <span>今日の復習</span>
 
-      <b style="font-size:25px">${due.length}問</b>
+      <b style="font-size:25px">
+
+        ${due.length}問
+
+      </b>
 
     </div>
 
   `;
 
-  reviewList.innerHTML=
+  document.getElementById(
+
+    "reviewList"
+
+  ).innerHTML=
 
     due.length
 
-      ?due.map(m=>itemHTML(m)).join("")
+    ? due
 
-      :`
+        .map(m=>itemHTML(m))
 
-        <div class="card empty">
+        .join("")
 
-          🎉 復習完了！<br>
+    :
 
-          次の復習日まで、少し休みましょう。
+    `<div class="card empty">
 
-        </div>
+      🎉 復習完了！<br>
 
-      `;
+      次の復習日まで、少し休みましょう。
 
-}
-
-function reviewNow(id){
-
-  let data=load();
-
-  let m=data.find(x=>x.id===id);
-
-  if(!m)return;
-
-  if(m.stage<intervals.length)m.stage++;
-
-  m.reviews=m.reviews||[];
-
-  m.reviews.push(today());
-
-  m.next=
-
-    m.stage>=intervals.length
-
-      ?null
-
-      :addDays(today(),intervals[m.stage]);
-
-  save(data);
-
-  renderAll();
-
-  toast(
-
-    m.stage>=intervals.length
-
-      ?"🎉 克服済みにしました！"
-
-      :"復習を記録しました！"
-
-  );
+    </div>`;
 
 }
 
-function deleteMistake(id){
+/* =====================================================
 
-  if(!confirm("この記録を削除しますか？"))return;
+   Stats
 
-  save(load().filter(x=>x.id!==id));
-
-  renderAll();
-
-  toast("削除しました");
-
-}
-
-/* =========================
-
-   統計
-
-========================= */
+===================================================== */
 
 function renderStats(){
 
   let data=load();
 
-  let mastered=data.filter(
+  let mastered=
 
-    x=>x.stage>=intervals.length
-
-  ).length;
-
-  statAll.textContent=data.length;
-
-  statMastered.textContent=mastered;
-
-  let parts=["Part1","Part2","Part3","Part4"];
-
-  statsParts.innerHTML=parts.map(p=>{
-
-    let a=data.filter(x=>x.part===p);
-
-    let d=a.filter(
+    data.filter(
 
       x=>x.stage>=intervals.length
 
     ).length;
 
-    let pct=a.length
+  document.getElementById(
 
-      ?Math.round(d/a.length*100)
+    "statAll"
 
-      :0;
+  ).textContent=data.length;
 
-    return `
+  document.getElementById(
+
+    "statMastered"
+
+  ).textContent=
+
+    mastered;
+
+  let start=getStudyStart();
+
+  document.getElementById(
+
+    "studyStartInput"
+
+  ).value=
+
+    start || today();
+
+  let parts=[
+
+    "Part1",
+
+    "Part2",
+
+    "Part3",
+
+    "Part4"
+
+  ];
+
+  document.getElementById(
+
+    "statsParts"
+
+  ).innerHTML=
+
+    parts.map(p=>{
+
+      let a=data.filter(
+
+        x=>x.part===p
+
+      );
+
+      let d=a.filter(
+
+        x=>x.stage>=intervals.length
+
+      ).length;
+
+      let pct=
+
+        a.length
+
+        ? Math.round(
+
+            d/a.length*100
+
+          )
+
+        : 0;
+
+      return `
 
       <div class="topic">
 
@@ -1694,13 +3694,19 @@ function renderStats(){
 
           <div class="muted">
 
-            ${a.length}件登録 / ${d}件克服
+            ${a.length}件登録 /
+
+            ${d}件克服
 
           </div>
 
           <div class="progress">
 
-            <i style="width:${pct}%"></i>
+            <i
+
+              style="width:${pct}%"
+
+            ></i>
 
           </div>
 
@@ -1710,27 +3716,41 @@ function renderStats(){
 
       </div>
 
-    `;
+      `;
 
-  }).join("");
+    }).join("");
 
   let counts={};
 
   data.forEach(m=>{
 
-    counts[m.topic]=(counts[m.topic]||0)+1;
+    counts[m.topic]=
+
+      (counts[m.topic]||0)+1;
 
   });
 
-  let arr=Object.entries(counts)
+  let arr=
 
-    .sort((a,b)=>b[1]-a[1]);
+    Object.entries(counts)
 
-  statsTopics.innerHTML=
+      .sort(
+
+        (a,b)=>b[1]-a[1]
+
+      );
+
+  document.getElementById(
+
+    "statsTopics"
+
+  ).innerHTML=
 
     arr.length
 
-      ?arr.map(([t,n])=>`
+    ? arr.map(
+
+        ([t,n])=>`
 
         <div
 
@@ -1742,7 +3762,9 @@ function renderStats(){
 
             border-bottom:1px solid #edf2f5
 
-          ">
+          "
+
+        >
 
           <span>${esc(t)}</span>
 
@@ -1750,63 +3772,181 @@ function renderStats(){
 
         </div>
 
-      `).join("")
+        `
 
-      :`<div class="empty">データなし</div>`;
+      ).join("")
+
+    :
+
+    `<div class="empty">
+
+      データなし
+
+    </div>`;
 
 }
 
-/* =========================
+/* =====================================================
 
-   バックアップ
+   学習開始日
 
-========================= */
+===================================================== */
+
+function saveStudyStart(){
+
+  let value=
+
+    document
+
+      .getElementById(
+
+        "studyStartInput"
+
+      )
+
+      .value;
+
+  if(!value){
+
+    alert(
+
+      "学習開始日を選択してください。"
+
+    );
+
+    return;
+
+  }
+
+  setStudyStart(value);
+
+  renderAll();
+
+  toast(
+
+    "学習開始日を保存しました"
+
+  );
+
+}
+
+function setTodayAsDay1(){
+
+  setStudyStart(
+
+    today()
+
+  );
+
+  document.getElementById(
+
+    "studyStartInput"
+
+  ).value=today();
+
+  renderAll();
+
+  toast(
+
+    "今日をDay1に設定しました！"
+
+  );
+
+}
+
+/* =====================================================
+
+   Backup
+
+===================================================== */
 
 function exportData(){
 
-  const backup={
+  let backup={
 
     version:2,
 
-    app:"ecg3-mistake-note",
+    appVersion:APP_VERSION,
 
-    exportedAt:new Date().toISOString(),
+    exportedAt:
 
-    studyStart:getStudyStart(),
+      new Date().toISOString(),
 
-    mistakes:load()
+    mistakes:
+
+      load(),
+
+    studyStartDate:
+
+      getStudyStart()
 
   };
 
   let blob=new Blob(
 
-    [JSON.stringify(backup,null,2)],
+    [
 
-    {type:"application/json"}
+      JSON.stringify(
+
+        backup,
+
+        null,
+
+        2
+
+      )
+
+    ],
+
+    {
+
+      type:"application/json"
+
+    }
 
   );
 
-  let a=document.createElement("a");
+  let a=
 
-  a.href=URL.createObjectURL(blob);
+    document.createElement("a");
+
+  a.href=
+
+    URL.createObjectURL(
+
+      blob
+
+    );
 
   a.download=
 
-    "ecg3-mistake-backup-"+today()+".json";
+    "ecg3-mistake-backup-"
+
+    +today()
+
+    +".json";
 
   a.click();
 
-  URL.revokeObjectURL(a.href);
+  URL.revokeObjectURL(
 
-  toast("バックアップを作成しました");
+    a.href
+
+  );
+
+  toast(
+
+    "バックアップを作成しました"
+
+  );
 
 }
 
-/* =========================
+/* =====================================================
 
-   復元
+   Restore
 
-========================= */
+===================================================== */
 
 function importData(e){
 
@@ -1820,43 +3960,51 @@ function importData(e){
 
     try{
 
-      let parsed=JSON.parse(r.result);
+      let raw=
+
+        JSON.parse(
+
+          r.result
+
+        );
 
       let mistakes;
 
-      let studyStart="";
+      let studyStart=null;
 
-      /*
-
-       v2形式
-
-      */
+      /* v2 */
 
       if(
 
-        parsed &&
+        raw &&
 
-        !Array.isArray(parsed) &&
+        !Array.isArray(raw) &&
 
-        Array.isArray(parsed.mistakes)
+        Array.isArray(raw.mistakes)
 
       ){
 
-        mistakes=parsed.mistakes;
+        mistakes=
 
-        studyStart=parsed.studyStart||"";
+          raw.mistakes;
+
+        studyStart=
+
+          raw.studyStartDate
+
+          || null;
 
       }
 
-      /*
+      /* v1 */
 
-       v1形式
+      else if(
 
-       */
+        Array.isArray(raw)
 
-      else if(Array.isArray(parsed)){
+      ){
 
-        mistakes=parsed;
+        mistakes=raw;
 
       }
 
@@ -1866,23 +4014,37 @@ function importData(e){
 
       }
 
-      if(!confirm(
+      if(
 
-        "現在のデータをバックアップデータに入れ替えます。\n\n"+
+        !confirm(
 
-        "現在のデータは上書きされます。続行しますか？"
+          "現在の間違いノートをバックアップの内容で置き換えます。よろしいですか？"
 
-      ))return;
+        )
+
+      ){
+
+        e.target.value="";
+
+        return;
+
+      }
 
       save(mistakes);
 
       if(studyStart){
 
-        localStorage.setItem(
-
-          START_KEY,
+        setStudyStart(
 
           studyStart
+
+        );
+
+      }else{
+
+        localStorage.removeItem(
+
+          STUDY_KEY
 
         );
 
@@ -1890,7 +4052,11 @@ function importData(e){
 
       renderAll();
 
-      toast("復元しました");
+      toast(
+
+        "復元しました"
+
+      );
 
     }catch(_){
 
@@ -1910,38 +4076,108 @@ function importData(e){
 
 }
 
-/* =========================
+/* =====================================================
 
    全削除
 
-========================= */
+===================================================== */
 
 function resetAll(){
 
   if(
 
-    confirm(
+    !confirm(
 
-      "全データを削除します。本当に削除しますか？"
+      "間違いノート・学習開始日などのデータをすべて削除します。本当に削除しますか？"
 
     )
 
-  ){
+  )return;
 
-    localStorage.removeItem(KEY);
+  localStorage.removeItem(
 
-    localStorage.removeItem(START_KEY);
+    KEY
 
-    renderAll();
+  );
 
-    toast("全データを削除しました");
+  localStorage.removeItem(
 
-  }
+    STUDY_KEY
+
+  );
+
+  renderAll();
+
+  toast(
+
+    "全データを削除しました"
+
+  );
 
 }
+
+/* =====================================================
+
+   全体描画
+
+===================================================== */
+
+function renderAll(){
+
+  renderHome();
+
+  renderMistakes();
+
+  renderReview();
+
+  renderStats();
+
+}
+
+/* =====================================================
+
+   Service Worker
+
+===================================================== */
+
+if(
+
+  "serviceWorker" in navigator
+
+){
+
+  window.addEventListener(
+
+    "load",
+
+    ()=>{
+
+      navigator.serviceWorker
+
+        .register("./sw.js")
+
+        .catch(
+
+          ()=>{}
+
+        );
+
+    }
+
+  );
+
+}
+
+/* =====================================================
+
+   START
+
+===================================================== */
 
 setup();
 
 </script>
+
 </body>
+
 </html>
