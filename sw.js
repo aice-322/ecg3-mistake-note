@@ -26,7 +26,7 @@ self.addEventListener("install", event => {
 
 });
 
-/* 古いキャッシュを削除 */
+/* 有効化・古いキャッシュ削除 */
 
 self.addEventListener("activate", event => {
 
@@ -54,7 +54,7 @@ self.addEventListener("activate", event => {
 
 });
 
-/* 通信 */
+/* ページ・ファイル取得 */
 
 self.addEventListener("fetch", event => {
 
@@ -64,15 +64,19 @@ self.addEventListener("fetch", event => {
 
       .then(response => {
 
-        const copy = response.clone();
+        if (response && response.status === 200) {
 
-        caches.open(CACHE)
+          const copy = response.clone();
 
-          .then(cache => {
+          caches.open(CACHE)
 
-            cache.put(event.request, copy);
+            .then(cache => {
 
-          });
+              cache.put(event.request, copy);
+
+            });
+
+        }
 
         return response;
 
