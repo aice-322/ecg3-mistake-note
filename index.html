@@ -4140,31 +4140,87 @@ function renderAll(){
 
 ===================================================== */
 
-if(
+/* =========================
 
-  "serviceWorker" in navigator
+   Service Worker 自動更新
 
-){
+========================= */
 
-  window.addEventListener(
+if ("serviceWorker" in navigator) {
 
-    "load",
+  window.addEventListener("load", async () => {
 
-    ()=>{
+    try {
 
-      navigator.serviceWorker
+      const registration =
 
-        .register("./sw.js")
+        await navigator.serviceWorker.register("./sw.js");
 
-        .catch(
+      /* 起動時に最新版を確認 */
 
-          ()=>{}
+      await registration.update();
 
-        );
+      /* 新しいService Workerが見つかった場合 */
+
+      registration.addEventListener("updatefound", () => {
+
+        const newWorker = registration.installing;
+
+        if (!newWorker) return;
+
+        newWorker.addEventListener("statechange", () => {
+
+          if (
+
+            newWorker.state === "installed" &&
+
+            navigator.serviceWorker.controller
+
+          ) {
+
+            console.log("最新版を取得しました");
+
+          }
+
+        });
+
+      });
+
+    } catch (error) {
+
+      console.log("Service Worker error:", error);
 
     }
 
-  );
+  });
+
+  /* ページが再び表示されたときにも更新確認 */
+
+  document.addEventListener("visibilitychange", async () => {
+
+    if (document.visibilityState === "visible") {
+
+      try {
+
+        const registration =
+
+          await navigator.serviceWorker.getRegistration();
+
+        if (registration) {
+
+          await registration.update();
+
+        }
+
+      } catch (error) {
+
+        console.log("Update check error:", error);
+
+      }
+
+    }
+
+  });
 
 }
 
