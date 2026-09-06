@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b8fc7">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="心電図3級">
+  <link rel="manifest" href="manifest.webmanifest">
+  <title>心電図検定3級｜間違いノート</title>
+  <style>
+    :root{
+      --blue:#0b8fc7; --blue2:#e8f7fc; --navy:#17324d; --pink:#f25b8b;
+      --green:#51a66a; --yellow:#f4b63e; --purple:#7b62c7; --red:#e95757;
+      --bg:#f5f8fb; --card:#fff; --line:#d9e5ec; --muted:#6c7b87;
+      --shadow:0 6px 18px rgba(23,50,77,.08); --radius:18px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",Meiryo,sans-serif;background:var(--bg);color:var(--navy);padding-bottom:84px}
+    button,input,select,textarea{font:inherit}
+    button{cursor:pointer}
+    .top{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:12px 16px}
+    .brand{display:flex;align-items:center;gap:10px;max-width:900px;margin:auto}
+    .heart{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,#ff6f9c,#f24e75);display:grid;place-items:center;color:#fff;font-size:23px;box-shadow:0 5px 12px rgba(242,78,117,.2)}
+    .brand h1{font-size:18px;margin:0;line-height:1.2}.brand small{color:var(--muted)}
+    main{max-width:900px;margin:auto;padding:16px}
+    .view{display:none}.view.active{display:block}
+    .hero{background:linear-gradient(135deg,#0b8fc7,#0875aa);color:white;border-radius:24px;padding:22px;box-shadow:var(--shadow);margin-bottom:16px}
+    .hero h2{margin:0 0 7px;font-size:25px}.hero p{margin:0;opacity:.92}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:18px}
+    .stat{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.2);border-radius:15px;padding:12px}
+    .stat b{display:block;font-size:22px}.stat span{font-size:12px}
+    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);margin-bottom:12px}
+    .card h3{margin:0 0 10px;font-size:17px}
+    .section-title{display:flex;justify-content:space-between;align-items:center;margin:20px 2px 10px}.section-title h2{font-size:19px;margin:0}
+    .btn{border:0;border-radius:13px;padding:11px 14px;font-weight:700}
+    .btn.primary{background:var(--blue);color:#fff}.btn.secondary{background:var(--blue2);color:var(--blue)}
+    .btn.ghost{background:#fff;border:1px solid var(--line);color:var(--navy)}
+    .btn.danger{background:#fff0f0;color:var(--red)}
+    .btn.small{padding:8px 10px;font-size:13px}
+    .actions{display:flex;gap:8px;flex-wrap:wrap}
+    .progress{height:10px;background:#e8eef2;border-radius:999px;overflow:hidden}.progress>i{display:block;height:100%;background:linear-gradient(90deg,var(--blue),#57c2e6);border-radius:999px}
+    .row{display:flex;gap:10px;align-items:center;justify-content:space-between}.muted{color:var(--muted);font-size:13px}
+    .review-list,.mistake-list{display:grid;gap:10px}
+    .item{background:#fff;border:1px solid var(--line);border-radius:15px;padding:13px}
+    .badge{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:5px 9px;font-size:12px;font-weight:700}
+    .b-red{background:#ffe9e9;color:#b83232}.b-yellow{background:#fff4d9;color:#9b6500}.b-green{background:#eaf8ee;color:#2e7b43}.b-blue{background:#e7f6fc;color:#08739f}.b-purple{background:#eeeafd;color:#624da5}
+    label{display:block;font-weight:700;font-size:13px;margin:13px 0 6px}
+    input,select,textarea{width:100%;border:1px solid #ccdbe4;background:#fff;border-radius:12px;padding:11px 12px;color:var(--navy);outline:none}
+    textarea{min-height:95px;resize:vertical}
+    input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(11,143,199,.1)}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .checkgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+    .check{display:flex;align-items:center;gap:7px;background:#f7fafc;border:1px solid var(--line);border-radius:11px;padding:9px;font-size:13px}
+    .check input{width:auto}
+    .empty{text-align:center;padding:30px 12px;color:var(--muted)}
+    .bottom{position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(255,255,255,.98);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:7px max(10px,env(safe-area-inset-left)) calc(7px + env(safe-area-inset-bottom))}
+    .nav{max-width:900px;margin:auto;display:grid;grid-template-columns:repeat(4,1fr);gap:5px}.nav button{background:none;border:0;color:#73818b;padding:7px 4px;border-radius:12px;font-size:11px}.nav button.active{background:var(--blue2);color:var(--blue);font-weight:800}.nav .ico{display:block;font-size:19px;margin-bottom:2px}
+    .topic{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid #edf2f5}.topic:last-child{border-bottom:0}.topic .dot{width:12px;height:12px;border-radius:50%;background:var(--blue)}
+    .topic .bar{flex:1}.topic .bar .progress{height:7px;margin-top:5px}
+    .modal{position:fixed;inset:0;background:rgba(12,32,48,.45);display:none;z-index:50;padding:15px;overflow:auto}.modal.open{display:block}
+    .modalbox{max-width:720px;margin:25px auto;background:#fff;border-radius:22px;padding:18px;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+    .modalhead{display:flex;justify-content:space-between;gap:10px;align-items:center}.modalhead h2{font-size:20px;margin:0}
+    .close{border:0;background:#eef3f6;border-radius:50%;width:36px;height:36px}
+    .toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%) translateY(15px);background:#17324d;color:#fff;border-radius:999px;padding:10px 16px;font-size:13px;opacity:0;pointer-events:none;transition:.25s;z-index:100}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    .danger-note{background:#fff6f6;border:1px solid #ffd4d4;color:#9e3535;border-radius:12px;padding:11px;font-size:12px}
+    @media(max-width:620px){
+      .stats{grid-template-columns:repeat(2,1fr)}
+      .grid,.form-grid{grid-template-columns:1fr}
+      .checkgrid{grid-template-columns:1fr 1fr}
+      main{padding:12px}
+      .hero{padding:18px}
+    }
+  </style>
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <div class="heart">♥</div>
+    <div><h1>心電図検定3級｜間違いノート</h1><small>「間違えた」を「できる」に変える</small></div>
+  </div>
+</header>
+
+<main>
+  <section id="home" class="view active">
+    <div class="hero">
+      <h2>🫀 今日の心電図学習</h2>
+      <p>間違えた問題を、忘れる前にもう一度。</p>
+      <div class="stats">
+        <div class="stat"><b id="sToday">0</b><span>今日の復習</span></div>
+        <div class="stat"><b id="sAll">0</b><span>登録ミス</span></div>
+        <div class="stat"><b id="sMastered">0</b><span>克服済み</span></div>
+        <div class="stat"><b id="sRate">0%</b><span>克服率</span></div>
+      </div>
+    </div>
+    <div class="actions" style="margin-bottom:14px">
+      <button class="btn primary" onclick="openAdd()">＋ 間違いを記録</button>
+      <button class="btn secondary" onclick="showView('review')">🔄 今日の復習</button>
+    </div>
+    <div class="section-title"><h2>📅 今日やること</h2></div>
+    <div id="homeReview"></div>
+    <div class="section-title"><h2>📚 Part別の進み具合</h2></div>
+    <div class="card" id="partProgress"></div>
+    <div class="section-title"><h2>⚠️ 苦手分野</h2></div>
+    <div class="card" id="weakTopics"></div>
+  </section>
+
+  <section id="mistakes" class="view">
+    <div class="section-title"><h2>❌ 間違いノート</h2><button class="btn primary small" onclick="openAdd()">＋ 追加</button></div>
+    <div class="card">
+      <input id="search" placeholder="🔎 問題番号・疾患名・メモを検索" oninput="renderMistakes()">
+    </div>
+    <div id="mistakeList" class="mistake-list"></div>
+  </section>
+
+  <section id="review" class="view">
+    <div class="section-title"><h2>🔄 復習</h2></div>
+    <div class="card">
+      <h3>忘却曲線ルート</h3>
+      <p class="muted">記録 → 1日後 → 3日後 → 7日後 → 14日後 → 30日後</p>
+      <div id="reviewSummary"></div>
+    </div>
+    <div id="reviewList" class="review-list"></div>
+  </section>
+
+  <section id="stats" class="view">
+    <div class="section-title"><h2>📊 学習状況</h2></div>
+    <div class="grid">
+      <div class="card"><h3>登録問題</h3><div style="font-size:32px;font-weight:800" id="statAll">0</div></div>
+      <div class="card"><h3>克服済み</h3><div style="font-size:32px;font-weight:800" id="statMastered">0</div></div>
+    </div>
+    <div class="section-title"><h2>Part別</h2></div>
+    <div class="card" id="statsParts"></div>
+    <div class="section-title"><h2>テーマ別</h2></div>
+    <div class="card" id="statsTopics"></div>
+    <div class="section-title"><h2>💾 データ</h2></div>
+    <div class="card">
+      <p class="muted">データはこのWebアプリのブラウザ保存領域に保存します。機種変更などに備えて定期的にバックアップしてください。</p>
+      <div class="actions">
+        <button class="btn secondary" onclick="exportData()">⬇️ バックアップ</button>
+        <label class="btn ghost" style="display:inline-block;margin:0;cursor:pointer">⬆️ 復元<input type="file" accept=".json" style="display:none" onchange="importData(event)"></label>
+        <button class="btn danger" onclick="resetAll()">全データ削除</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<nav class="bottom">
+  <div class="nav">
+    <button class="active" data-view="home" onclick="showView('home')"><span class="ico">🏠</span>ホーム</button>
+    <button data-view="mistakes" onclick="showView('mistakes')"><span class="ico">❌</span>間違い</button>
+    <button data-view="review" onclick="showView('review')"><span class="ico">🔄</span>復習</button>
+    <button data-view="stats" onclick="showView('stats')"><span class="ico">📊</span>分析</button>
+  </div>
+</nav>
+
+<div id="modal" class="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modalbox">
+    <div class="modalhead"><h2 id="modalTitle">間違いを記録</h2><button class="close" onclick="closeModal()">✕</button></div>
+    <form id="mistakeForm" onsubmit="saveMistake(event)">
+      <input type="hidden" id="editId">
+      <div class="form-grid">
+        <div><label>Part</label><select id="part" required>
+          <option value="Part1">Part1｜ルーティン10問</option>
+          <option value="Part2">Part2｜とことん練習100問</option>
+          <option value="Part3">Part3｜本番想定・実力テスト50問</option>
+          <option value="Part4">Part4｜1級をのぞき見10問</option>
+        </select></div>
+        <div><label>問題番号</label><input id="qno" placeholder="例：Q23" required></div>
+      </div>
+      <div class="form-grid">
+        <div><label>出題日</label><input id="date" type="date" required></div>
+        <div><label>参考書ページ</label><input id="page" placeholder="例：P.42"></div>
+      </div>
+      <label>テーマ</label>
+      <select id="topic" required></select>
+      <label>自分の答え</label><input id="wrong" placeholder="例：心房細動">
+      <label>正解</label><input id="correct" placeholder="例：心房粗動" required>
+      <label>なぜ間違えた？</label><textarea id="reason" placeholder="例：鋸歯状波を見落とした"></textarea>
+      <label>正しい知識・見分け方</label><textarea id="knowledge" placeholder="例：心房粗動は鋸歯状波が特徴。RRやP波との違いも確認。"></textarea>
+      <label>自分への一言</label><input id="memo" placeholder="例：AFとAFLをもう一度比較する">
+      <label>該当するポイント（複数OK）</label>
+      <div class="checkgrid" id="checks"></div>
+      <div class="actions" style="margin-top:16px">
+        <button type="submit" class="btn primary">保存する</button>
+        <button type="button" class="btn ghost" onclick="closeModal()">キャンセル</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+const KEY="ecg3_mistakes_v1";
+const topics=[
+ "心臓の解剖・構造・役割","心電図検査の目的","心電図を読み解くルール",
+ "正常洞調律","左右付け間違い・右胸心","心房負荷・心室負荷",
+ "PAC・PVCなど期外収縮","脚ブロック","房室ブロック","洞不全症候群",
+ "心房細動・心房粗動・PSVT","心筋梗塞","虚血・ST-T変化","たこつぼ症候群",
+ "急性肺血栓塞栓症","心膜炎","低電位・高電位","左室肥大・右室肥大",
+ "WPW症候群","QT延長・QT短縮","高K・低K血症","Brugada症候群",
+ "早期再分極症候群","ペースメーカー","その他"
+];
+const points=["P波","QRS波","T波","PR間隔","QRS幅","QT間隔","RR間隔","ST・T","リズム","その他"];
+const intervals=[1,3,7,14,30];
+
+function load(){try{return JSON.parse(localStorage.getItem(KEY)||"[]")}catch(e){return []}}
+function save(data){localStorage.setItem(KEY,JSON.stringify(data))}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2)}
+function today(){return new Date().toISOString().slice(0,10)}
+function addDays(s,n){let d=new Date(s+"T12:00:00");d.setDate(d.getDate()+n);return d.toISOString().slice(0,10)}
+function fmt(s){if(!s)return "-";let d=new Date(s+"T12:00:00");return `${d.getMonth()+1}/${d.getDate()}`}
+function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+function toast(t){let x=document.getElementById("toast");x.textContent=t;x.classList.add("show");setTimeout(()=>x.classList.remove("show"),1800)}
+
+function setup(){
+  document.getElementById("topic").innerHTML=topics.map(x=>`<option>${esc(x)}</option>`).join("");
+  document.getElementById("checks").innerHTML=points.map((x,i)=>`<label class="check"><input type="checkbox" value="${esc(x)}"> ${esc(x)}</label>`).join("");
+  document.getElementById("date").value=today();
+  renderAll();
+}
+function showView(v){
+  document.querySelectorAll(".view").forEach(x=>x.classList.remove("active"));
+  document.getElementById(v).classList.add("active");
+  document.querySelectorAll(".nav button").forEach(x=>x.classList.toggle("active",x.dataset.view===v));
+  window.scrollTo({top:0,behavior:"smooth"});
+  renderAll();
+}
+function openAdd(id=null){
+  document.getElementById("modal").classList.add("open");
+  document.getElementById("modalTitle").textContent=id?"間違いを編集":"間違いを記録";
+  document.getElementById("mistakeForm").reset();
+  document.getElementById("editId").value=id||"";
+  document.getElementById("date").value=today();
+  document.querySelectorAll("#checks input").forEach(x=>x.checked=false);
+  if(id){
+    let m=load().find(x=>x.id===id); if(!m)return;
+    ["part","qno","date","page","topic","wrong","correct","reason","knowledge","memo"].forEach(k=>{document.getElementById(k).value=m[k]||""});
+    (m.points||[]).forEach(p=>{let el=[...document.querySelectorAll("#checks input")].find(x=>x.value===p);if(el)el.checked=true});
+  }
+}
+function closeModal(){document.getElementById("modal").classList.remove("open")}
+
+function saveMistake(e){
+  e.preventDefault();
+  let data=load(), id=document.getElementById("editId").value;
+  let base={
+    part:part.value,qno:qno.value.trim(),date:date.value,page:page.value.trim(),topic:topic.value,
+    wrong:wrong.value.trim(),correct:correct.value.trim(),reason:reason.value.trim(),
+    knowledge:knowledge.value.trim(),memo:memo.value.trim(),
+    points:[...document.querySelectorAll("#checks input:checked")].map(x=>x.value)
+  };
+  if(id){
+    let old=data.find(x=>x.id===id); Object.assign(old,base);
+    // keep review progress when editing
+  }else{
+    base.id=uid(); base.stage=0; base.next=addDays(base.date,1); base.reviews=[];
+    data.unshift(base);
+  }
+  save(data);closeModal();renderAll();toast(id?"更新しました":"記録しました");
+}
+function renderAll(){renderHome();renderMistakes();renderReview();renderStats()}
+
+function getDue(){
+  return load().filter(m=>m.stage<intervals.length && m.next<=today());
+}
+function renderHome(){
+  let data=load(), due=getDue(), mastered=data.filter(x=>x.stage>=intervals.length);
+  sToday.textContent=due.length;sAll.textContent=data.length;sMastered.textContent=mastered.length;
+  sRate.textContent=data.length?Math.round(mastered.length/data.length*100)+"%":"0%";
+  homeReview.innerHTML=due.length?due.slice(0,5).map(m=>itemHTML(m,true)).join(""):`<div class="card empty">🎉 今日の復習はありません。<br>新しい問題に挑戦しましょう！</div>`;
+  let parts=["Part1","Part2","Part3","Part4"];
+  partProgress.innerHTML=parts.map(p=>{
+    let a=data.filter(x=>x.part===p), done=a.filter(x=>x.stage>=intervals.length).length, pct=a.length?Math.round(done/a.length*100):0;
+    return `<div class="topic"><b>${p}</b><div class="bar"><div class="muted">${done}/${a.length} 克服</div><div class="progress"><i style="width:${pct}%"></i></div></div><b>${pct}%</b></div>`
+  }).join("");
+  let counts={};data.forEach(m=>counts[m.topic]=(counts[m.topic]||0)+1);
+  let arr=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  weakTopics.innerHTML=arr.length?arr.map(([t,n])=>`<div class="row" style="padding:8px 0"><span>${esc(t)}</span><span class="badge b-red">${n}件</span></div>`).join(""):`<div class="empty">まだ記録がありません。</div>`;
+}
+function itemHTML(m,compact=false){
+  let due=m.stage>=intervals.length?"克服済み":(m.next<=today()?"今日復習":"次回 "+fmt(m.next));
+  let badge=m.stage>=intervals.length?"b-green":m.next<=today()?"b-red":"b-yellow";
+  return `<div class="item">
+    <div class="row"><div><span class="badge b-blue">${esc(m.part)}</span> <span class="badge ${badge}">${due}</span></div><button class="btn ghost small" onclick="openAdd('${m.id}')">編集</button></div>
+    <div style="font-weight:800;margin-top:8px">${esc(m.qno)}｜${esc(m.correct)}</div>
+    <div class="muted" style="margin-top:4px">${esc(m.topic)}${m.page?" ・ "+esc(m.page):""}</div>
+    ${compact?"":`<div style="margin-top:9px"><b>なぜ間違えた？</b><div>${esc(m.reason)||"—"}</div></div>
+    <div style="margin-top:8px"><b>正しい知識</b><div>${esc(m.knowledge)||"—"}</div></div>
+    <div class="actions" style="margin-top:10px">
+      <button class="btn secondary small" onclick="reviewNow('${m.id}')">🔄 復習できた</button>
+      <button class="btn danger small" onclick="deleteMistake('${m.id}')">削除</button>
+    </div>`}
+  </div>`
+}
+function renderMistakes(){
+  let q=(document.getElementById("search")?.value||"").toLowerCase();
+  let data=load().filter(m=>JSON.stringify(m).toLowerCase().includes(q));
+  mistakeList.innerHTML=data.length?data.map(m=>itemHTML(m)).join(""):`<div class="card empty">まだ間違いノートがありません。<br>「＋追加」から1問登録してみましょう。</div>`;
+}
+function renderReview(){
+  let due=getDue();
+  reviewSummary.innerHTML=`<div class="row"><span>今日の復習</span><b style="font-size:25px">${due.length}問</b></div>`;
+  reviewList.innerHTML=due.length?due.map(m=>itemHTML(m)).join(""):`<div class="card empty">🎉 復習完了！<br>次の復習日まで、少し休みましょう。</div>`;
+}
+function reviewNow(id){
+  let data=load(),m=data.find(x=>x.id===id);if(!m)return;
+  if(m.stage<intervals.length)m.stage++;
+  m.reviews=m.reviews||[];m.reviews.push(today());
+  m.next=m.stage>=intervals.length?null:addDays(today(),intervals[m.stage]);
+  save(data);renderAll();toast(m.stage>=intervals.length?"🎉 克服済みにしました！":"復習を記録しました！");
+}
+function deleteMistake(id){if(!confirm("この記録を削除しますか？"))return;save(load().filter(x=>x.id!==id));renderAll();toast("削除しました")}
+function renderStats(){
+  let data=load(), mastered=data.filter(x=>x.stage>=intervals.length).length;
+  statAll.textContent=data.length;statMastered.textContent=mastered;
+  let parts=["Part1","Part2","Part3","Part4"];
+  statsParts.innerHTML=parts.map(p=>{let a=data.filter(x=>x.part===p),d=a.filter(x=>x.stage>=intervals.length).length,pct=a.length?Math.round(d/a.length*100):0;return `<div class="topic"><b>${p}</b><div class="bar"><div class="muted">${a.length}件登録 / ${d}件克服</div><div class="progress"><i style="width:${pct}%"></i></div></div><b>${pct}%</b></div>`}).join("");
+  let counts={};data.forEach(m=>counts[m.topic]=(counts[m.topic]||0)+1);
+  let arr=Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+  statsTopics.innerHTML=arr.length?arr.map(([t,n])=>`<div class="row" style="padding:8px 0;border-bottom:1px solid #edf2f5"><span>${esc(t)}</span><b>${n}件</b></div>`).join(""):`<div class="empty">データなし</div>`;
+}
+function exportData(){
+  let blob=new Blob([JSON.stringify(load(),null,2)],{type:"application/json"});
+  let a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="ecg3-mistake-backup-"+today()+".json";a.click();URL.revokeObjectURL(a.href);
+  toast("バックアップを作成しました");
+}
+function importData(e){
+  let f=e.target.files[0];if(!f)return;
+  let r=new FileReader();r.onload=()=>{try{let d=JSON.parse(r.result);if(!Array.isArray(d))throw Error();save(d);renderAll();toast("復元しました")}catch(_){alert("正しいバックアップJSONではありません。")}};r.readAsText(f);
+}
+function resetAll(){if(confirm("全データを削除します。本当に削除しますか？")){localStorage.removeItem(KEY);renderAll();toast("全データを削除しました")}}
+setup();
+</script>
+</body>
+</html>
