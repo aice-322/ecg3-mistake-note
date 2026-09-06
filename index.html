@@ -73,6 +73,93 @@
       .checkgrid{grid-template-columns:1fr 1fr}
       main{padding:12px}
       .hero{padding:18px}
+      .btn{
+
+        min-height:46px;
+
+        padding:12px 16px;
+
+        font-size:15px;
+
+      }
+
+      .btn.small{
+
+        min-height:42px;
+
+        padding:10px 13px;
+
+        font-size:14px;
+
+      }
+
+      input,
+
+      select,
+
+      textarea{
+
+        min-height:48px;
+
+        font-size:16px;
+
+      }
+
+      textarea{
+
+        min-height:120px;
+
+      }
+
+      .nav button{
+
+        min-height:54px;
+
+        font-size:11px;
+
+      }
+
+      .nav .ico{
+
+        font-size:21px;
+
+      }
+
+      .modal{
+
+        padding:8px;
+
+      }
+
+      .modalbox{
+
+        margin:8px auto;
+
+        padding:16px;
+
+        border-radius:20px;
+
+      }
+
+      .modalhead{
+
+        position:sticky;
+
+        top:0;
+
+        background:#fff;
+
+        z-index:2;
+
+        padding-bottom:10px;
+
+      }
+
+      .study-card{
+
+        border:2px solid var(--blue);
+
+      }
     }
   </style>
 </head>
@@ -102,6 +189,7 @@
     </div>
     <div class="section-title"><h2>📅 今日やること</h2></div>
     <div id="homeReview"></div>
+    <div id="studyPlanBox"></div>
     <div class="section-title"><h2>📚 Part別の進み具合</h2></div>
     <div class="card" id="partProgress"></div>
     <div class="section-title"><h2>⚠️ 苦手分野</h2></div>
@@ -195,146 +283,1665 @@
 <div id="toast" class="toast"></div>
 
 <script>
+
 const KEY="ecg3_mistakes_v1";
+
+const START_KEY="ecg3_study_start_v1";
+
 const topics=[
+
  "心臓の解剖・構造・役割","心電図検査の目的","心電図を読み解くルール",
+
  "正常洞調律","左右付け間違い・右胸心","心房負荷・心室負荷",
+
  "PAC・PVCなど期外収縮","脚ブロック","房室ブロック","洞不全症候群",
+
  "心房細動・心房粗動・PSVT","心筋梗塞","虚血・ST-T変化","たこつぼ症候群",
+
  "急性肺血栓塞栓症","心膜炎","低電位・高電位","左室肥大・右室肥大",
+
  "WPW症候群","QT延長・QT短縮","高K・低K血症","Brugada症候群",
+
  "早期再分極症候群","ペースメーカー","その他"
+
 ];
-const points=["P波","QRS波","T波","PR間隔","QRS幅","QT間隔","RR間隔","ST・T","リズム","その他"];
+
+const points=[
+
+ "P波","QRS波","T波","PR間隔","QRS幅",
+
+ "QT間隔","RR間隔","ST・T","リズム","その他"
+
+];
+
 const intervals=[1,3,7,14,30];
 
-function load(){try{return JSON.parse(localStorage.getItem(KEY)||"[]")}catch(e){return []}}
-function save(data){localStorage.setItem(KEY,JSON.stringify(data))}
-function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2)}
-function today(){return new Date().toISOString().slice(0,10)}
-function addDays(s,n){let d=new Date(s+"T12:00:00");d.setDate(d.getDate()+n);return d.toISOString().slice(0,10)}
-function fmt(s){if(!s)return "-";let d=new Date(s+"T12:00:00");return `${d.getMonth()+1}/${d.getDate()}`}
-function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
-function toast(t){let x=document.getElementById("toast");x.textContent=t;x.classList.add("show");setTimeout(()=>x.classList.remove("show"),1800)}
+/* =========================
+
+   30日学習プラン
+
+========================= */
+
+const studyPlan=[
+
+ {
+
+  day:1,
+
+  title:"心電図の基礎",
+
+  topic:"心臓の解剖・構造・役割",
+
+  content:"心房・心室・弁・刺激伝導系の位置関係を確認。洞結節→房室結節→His束→脚→Purkinje線維の流れを覚える。",
+
+  task:"参考書の基礎部分を読み、刺激伝導系を自分で説明する。"
+
+ },
+
+ {
+
+  day:2,
+
+  title:"心電図検査の目的",
+
+  topic:"心電図検査の目的",
+
+  content:"12誘導心電図の意味、各誘導が心臓のどの方向を見ているかを確認。",
+
+  task:"12誘導の名前と特徴を整理する。"
+
+ },
+
+ {
+
+  day:3,
+
+  title:"心電図を読む順番",
+
+  topic:"心電図を読み解くルール",
+
+  content:"心拍数→リズム→P波→PR間隔→QRS→ST→T波→QTの順番で見る習慣を作る。",
+
+  task:"心電図を読む順番を何も見ずに言えるようにする。"
+
+ },
+
+ {
+
+  day:4,
+
+  title:"正常洞調律",
+
+  topic:"正常洞調律",
+
+  content:"正常なP波、PR間隔、QRS幅、RR間隔を確認。",
+
+  task:"正常心電図の特徴を5つ説明する。"
+
+ },
+
+ {
+
+  day:5,
+
+  title:"P波を読む",
+
+  topic:"P波",
+
+  content:"P波の形・幅・高さと、心房の興奮について確認。",
+
+  task:"P波異常から考えられる疾患を整理する。"
+
+ },
+
+ {
+
+  day:6,
+
+  title:"PR間隔",
+
+  topic:"PR間隔",
+
+  content:"PR間隔の意味と延長・短縮の原因を確認。",
+
+  task:"房室伝導について説明する。"
+
+ },
+
+ {
+
+  day:7,
+
+  title:"QRS波",
+
+  topic:"QRS波",
+
+  content:"QRS幅と心室興奮の関係を確認。狭いQRSと広いQRSを比較。",
+
+  task:"QRS幅の正常値と異常の意味を覚える。"
+
+ },
+
+ {
+
+  day:8,
+
+  title:"脚ブロック",
+
+  topic:"脚ブロック",
+
+  content:"右脚ブロック・左脚ブロックの特徴を比較。",
+
+  task:"RBBBとLBBBの違いを表にする。"
+
+ },
+
+ {
+
+  day:9,
+
+  title:"PAC・PVC",
+
+  topic:"PAC・PVCなど期外収縮",
+
+  content:"上室性期外収縮と心室性期外収縮の違いを確認。",
+
+  task:"PACとPVCを心電図だけで見分ける練習。"
+
+ },
+
+ {
+
+  day:10,
+
+  title:"房室ブロック",
+
+  topic:"房室ブロック",
+
+  content:"Ⅰ度、Ⅱ度、Ⅲ度房室ブロックの特徴を確認。",
+
+  task:"MobitzⅠ・MobitzⅡ・完全房室ブロックを比較する。"
+
+ },
+
+ {
+
+  day:11,
+
+  title:"心房細動",
+
+  topic:"心房細動・心房粗動・PSVT",
+
+  content:"AFの特徴である不規則なRR間隔やP波消失を確認。",
+
+  task:"AFの心電図所見を説明する。"
+
+ },
+
+ {
+
+  day:12,
+
+  title:"心房粗動・PSVT",
+
+  topic:"心房細動・心房粗動・PSVT",
+
+  content:"鋸歯状波とPSVTの規則的な頻拍を確認。",
+
+  task:"AF・AFL・PSVTの違いを整理する。"
+
+ },
+
+ {
+
+  day:13,
+
+  title:"心房負荷",
+
+  topic:"心房負荷・心室負荷",
+
+  content:"右房負荷・左房負荷のP波変化を確認。",
+
+  task:"P pulmonale、P mitraleを整理する。"
+
+ },
+
+ {
+
+  day:14,
+
+  title:"心室肥大",
+
+  topic:"左室肥大・右室肥大",
+
+  content:"左室肥大・右室肥大の心電図所見を確認。",
+
+  task:"代表的な電位基準を確認する。"
+
+ },
+
+ {
+
+  day:15,
+
+  title:"虚血",
+
+  topic:"虚血・ST-T変化",
+
+  content:"ST低下・T波変化など虚血性変化を確認。",
+
+  task:"虚血を疑うST-T変化を整理する。"
+
+ },
+
+ {
+
+  day:16,
+
+  title:"心筋梗塞",
+
+  topic:"心筋梗塞",
+
+  content:"ST上昇、異常Q波、T波変化と梗塞部位を確認。",
+
+  task:"前壁・下壁などの誘導対応を覚える。"
+
+ },
+
+ {
+
+  day:17,
+
+  title:"QT間隔",
+
+  topic:"QT延長・QT短縮",
+
+  content:"QT間隔と再分極、QT延長・短縮の意味を確認。",
+
+  task:"QT延長の原因を整理する。"
+
+ },
+
+ {
+
+  day:18,
+
+  title:"電解質異常",
+
+  topic:"高K・低K血症",
+
+  content:"高K血症・低K血症に特徴的なT波、U波などを確認。",
+
+  task:"高Kと低Kの心電図変化を比較する。"
+
+ },
+
+ {
+
+  day:19,
+
+  title:"WPW症候群",
+
+  topic:"WPW症候群",
+
+  content:"短いPR間隔、デルタ波、QRS幅について確認。",
+
+  task:"WPWの3つの特徴を覚える。"
+
+ },
+
+ {
+
+  day:20,
+
+  title:"Brugada症候群",
+
+  topic:"Brugada症候群",
+
+  content:"V1〜V3付近のST変化など特徴的な所見を確認。",
+
+  task:"Brugada型心電図の特徴を整理する。"
+
+ },
+
+ {
+
+  day:21,
+
+  title:"早期再分極",
+
+  topic:"早期再分極症候群",
+
+  content:"若年者にも見られる早期再分極の特徴を確認。",
+
+  task:"ST上昇との鑑別ポイントを整理する。"
+
+ },
+
+ {
+
+  day:22,
+
+  title:"低電位・高電位",
+
+  topic:"低電位・高電位",
+
+  content:"QRS電位の大きさと、その背景にある疾患を確認。",
+
+  task:"低電位・高電位の原因を整理する。"
+
+ },
+
+ {
+
+  day:23,
+
+  title:"肺血栓塞栓症",
+
+  topic:"急性肺血栓塞栓症",
+
+  content:"肺血栓塞栓症で見られる心電図変化を確認。",
+
+  task:"典型所見と、心電図だけでは診断できないことを確認する。"
+
+ },
+
+ {
+
+  day:24,
+
+  title:"心膜炎",
+
+  topic:"心膜炎",
+
+  content:"広範なST上昇やPR変化などを確認。",
+
+  task:"心筋梗塞との違いを整理する。"
+
+ },
+
+ {
+
+  day:25,
+
+  title:"たこつぼ症候群",
+
+  topic:"たこつぼ症候群",
+
+  content:"心筋梗塞との鑑別を意識して心電図変化を確認。",
+
+  task:"特徴と鑑別ポイントを整理する。"
+
+ },
+
+ {
+
+  day:26,
+
+  title:"ペースメーカー",
+
+  topic:"ペースメーカー",
+
+  content:"ペーシングスパイクと捕捉について確認。",
+
+  task:"ペースメーカー心電図の基本を覚える。"
+
+ },
+
+ {
+
+  day:27,
+
+  title:"総復習①",
+
+  topic:"心電図を読み解くルール",
+
+  content:"これまで学んだ内容を使って複数の心電図を読む。",
+
+  task:"心拍数→リズム→P→PR→QRS→ST-T→QTの順に判読する。"
+
+ },
+
+ {
+
+  day:28,
+
+  title:"総復習②",
+
+  topic:"心房細動・心房粗動・PSVT",
+
+  content:"不整脈を中心に総復習。",
+
+  task:"AF・AFL・PSVT・PAC・PVC・房室ブロックを比較する。"
+
+ },
+
+ {
+
+  day:29,
+
+  title:"本番想定",
+
+  topic:"心電図を読み解くルール",
+
+  content:"時間を測って問題演習。分からない問題は間違いノートに登録。",
+
+  task:"本番を想定してまとめて問題を解く。"
+
+ },
+
+ {
+
+  day:30,
+
+  title:"最終確認",
+
+  topic:"苦手分野総復習",
+
+  content:"間違いノートを中心に弱点を総復習。",
+
+  task:"間違いノートから苦手な5問を選び、説明できる状態にする。"
+
+ }
+
+];
+
+/* =========================
+
+   基本処理
+
+========================= */
+
+function load(){
+
+  try{
+
+    const d=JSON.parse(localStorage.getItem(KEY)||"[]");
+
+    return Array.isArray(d)?d:[];
+
+  }catch(e){return []}
+
+}
+
+function save(data){
+
+  localStorage.setItem(KEY,JSON.stringify(data));
+
+}
+
+function uid(){
+
+  return Date.now().toString(36)+Math.random().toString(36).slice(2);
+
+}
+
+function today(){
+
+  return new Date().toISOString().slice(0,10);
+
+}
+
+function addDays(s,n){
+
+  let d=new Date(s+"T12:00:00");
+
+  d.setDate(d.getDate()+n);
+
+  return d.toISOString().slice(0,10);
+
+}
+
+function fmt(s){
+
+  if(!s)return "-";
+
+  let d=new Date(s+"T12:00:00");
+
+  return `${d.getMonth()+1}/${d.getDate()}`;
+
+}
+
+function esc(s){
+
+  return String(s??"").replace(/[&<>"']/g,m=>({
+
+    "&":"&amp;",
+
+    "<":"&lt;",
+
+    ">":"&gt;",
+
+    '"':"&quot;",
+
+    "'":"&#39;"
+
+  }[m]));
+
+}
+
+function toast(t){
+
+  let x=document.getElementById("toast");
+
+  x.textContent=t;
+
+  x.classList.add("show");
+
+  setTimeout(()=>x.classList.remove("show"),1800);
+
+}
+
+/* =========================
+
+   学習開始日
+
+========================= */
+
+function getStudyStart(){
+
+  return localStorage.getItem(START_KEY)||"";
+
+}
+
+function setStudyStart(date){
+
+  localStorage.setItem(START_KEY,date);
+
+  renderAll();
+
+  toast("学習開始日を設定しました");
+
+}
+
+function getStudyDay(){
+
+  const start=getStudyStart();
+
+  if(!start)return 0;
+
+  const a=new Date(start+"T12:00:00");
+
+  const b=new Date(today()+"T12:00:00");
+
+  const diff=Math.floor((b-a)/86400000)+1;
+
+  if(diff<1)return 1;
+
+  if(diff>30)return 30;
+
+  return diff;
+
+}
+
+function getTodayPlan(){
+
+  const day=getStudyDay();
+
+  return day?studyPlan[day-1]:null;
+
+}
+
+function setTodayAsDay1(){
+
+  setStudyStart(today());
+
+}
+
+function renderStudyPlan(){
+
+  const box=document.getElementById("studyPlanBox");
+
+  if(!box)return;
+
+  const start=getStudyStart();
+
+  const plan=getTodayPlan();
+
+  if(!start){
+
+    box.innerHTML=`
+
+      <div class="card">
+
+        <h3>📚 30日学習プラン</h3>
+
+        <p class="muted">
+
+          学習開始日を設定すると、今日がDay1〜Day30のどこか自動判定します。
+
+        </p>
+
+        <button class="btn primary" onclick="setTodayAsDay1()">
+
+          🚀 今日をDay1にする
+
+        </button>
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+  const day=getStudyDay();
+
+  box.innerHTML=`
+
+    <div class="card study-card">
+
+      <div class="row">
+
+        <div>
+
+          <span class="badge b-blue">DAY ${day}</span>
+
+          <span class="badge b-purple">${esc(plan.topic)}</span>
+
+        </div>
+
+        <button class="btn ghost small" onclick="setTodayAsDay1()">
+
+          今日をDay1にする
+
+        </button>
+
+      </div>
+
+      <h3 style="font-size:21px;margin-top:13px">
+
+        ${esc(plan.title)}
+
+      </h3>
+
+      <p style="line-height:1.7">
+
+        ${esc(plan.content)}
+
+      </p>
+
+      <div style="
+
+        background:#e8f7fc;
+
+        border-radius:14px;
+
+        padding:13px;
+
+        margin-top:12px;
+
+      ">
+
+        <b>📝 今日の勉強</b>
+
+        <div style="margin-top:5px;line-height:1.6">
+
+          ${esc(plan.task)}
+
+        </div>
+
+      </div>
+
+      <div style="margin-top:14px">
+
+        <div class="row">
+
+          <span class="muted">30日プラン</span>
+
+          <b>${day}/30</b>
+
+        </div>
+
+        <div class="progress" style="margin-top:6px">
+
+          <i style="width:${Math.round(day/30*100)}%"></i>
+
+        </div>
+
+      </div>
+
+      <p class="muted" style="margin-top:10px">
+
+        開始日：${fmt(start)}
+
+      </p>
+
+    </div>
+
+  `;
+
+}
+
+/* =========================
+
+   初期設定
+
+========================= */
 
 function setup(){
-  document.getElementById("topic").innerHTML=topics.map(x=>`<option>${esc(x)}</option>`).join("");
-  document.getElementById("checks").innerHTML=points.map((x,i)=>`<label class="check"><input type="checkbox" value="${esc(x)}"> ${esc(x)}</label>`).join("");
+
+  document.getElementById("topic").innerHTML=
+
+    topics.map(x=>`<option>${esc(x)}</option>`).join("");
+
+  document.getElementById("checks").innerHTML=
+
+    points.map(x=>`
+
+      <label class="check">
+
+        <input type="checkbox" value="${esc(x)}">
+
+        ${esc(x)}
+
+      </label>
+
+    `).join("");
+
   document.getElementById("date").value=today();
+
   renderAll();
-}
-function showView(v){
-  document.querySelectorAll(".view").forEach(x=>x.classList.remove("active"));
-  document.getElementById(v).classList.add("active");
-  document.querySelectorAll(".nav button").forEach(x=>x.classList.toggle("active",x.dataset.view===v));
-  window.scrollTo({top:0,behavior:"smooth"});
-  renderAll();
-}
-function openAdd(id=null){
-  document.getElementById("modal").classList.add("open");
-  document.getElementById("modalTitle").textContent=id?"間違いを編集":"間違いを記録";
-  document.getElementById("mistakeForm").reset();
-  document.getElementById("editId").value=id||"";
-  document.getElementById("date").value=today();
-  document.querySelectorAll("#checks input").forEach(x=>x.checked=false);
-  if(id){
-    let m=load().find(x=>x.id===id); if(!m)return;
-    ["part","qno","date","page","topic","wrong","correct","reason","knowledge","memo"].forEach(k=>{document.getElementById(k).value=m[k]||""});
-    (m.points||[]).forEach(p=>{let el=[...document.querySelectorAll("#checks input")].find(x=>x.value===p);if(el)el.checked=true});
+
+  if("serviceWorker" in navigator){
+
+    navigator.serviceWorker.register("./sw.js").catch(()=>{});
+
   }
+
 }
-function closeModal(){document.getElementById("modal").classList.remove("open")}
+
+/* =========================
+
+   画面
+
+========================= */
+
+function showView(v){
+
+  document.querySelectorAll(".view")
+
+    .forEach(x=>x.classList.remove("active"));
+
+  document.getElementById(v).classList.add("active");
+
+  document.querySelectorAll(".nav button")
+
+    .forEach(x=>x.classList.toggle(
+
+      "active",
+
+      x.dataset.view===v
+
+    ));
+
+  window.scrollTo({top:0,behavior:"smooth"});
+
+  renderAll();
+
+}
+
+/* =========================
+
+   モーダル
+
+========================= */
+
+function openAdd(id=null){
+
+  document.getElementById("modal").classList.add("open");
+
+  document.getElementById("modalTitle").textContent=
+
+    id?"間違いを編集":"間違いを記録";
+
+  document.getElementById("mistakeForm").reset();
+
+  document.getElementById("editId").value=id||"";
+
+  document.getElementById("date").value=today();
+
+  document.querySelectorAll("#checks input")
+
+    .forEach(x=>x.checked=false);
+
+  if(id){
+
+    let m=load().find(x=>x.id===id);
+
+    if(!m)return;
+
+    [
+
+      "part","qno","date","page","topic",
+
+      "wrong","correct","reason","knowledge","memo"
+
+    ].forEach(k=>{
+
+      document.getElementById(k).value=m[k]||"";
+
+    });
+
+    (m.points||[]).forEach(p=>{
+
+      let el=[...document.querySelectorAll("#checks input")]
+
+        .find(x=>x.value===p);
+
+      if(el)el.checked=true;
+
+    });
+
+  }
+
+}
+
+function closeModal(){
+
+  document.getElementById("modal").classList.remove("open");
+
+}
+
+/* =========================
+
+   間違い登録
+
+========================= */
 
 function saveMistake(e){
+
   e.preventDefault();
-  let data=load(), id=document.getElementById("editId").value;
+
+  let data=load();
+
+  let id=document.getElementById("editId").value;
+
   let base={
-    part:part.value,qno:qno.value.trim(),date:date.value,page:page.value.trim(),topic:topic.value,
-    wrong:wrong.value.trim(),correct:correct.value.trim(),reason:reason.value.trim(),
-    knowledge:knowledge.value.trim(),memo:memo.value.trim(),
-    points:[...document.querySelectorAll("#checks input:checked")].map(x=>x.value)
+
+    part:part.value,
+
+    qno:qno.value.trim(),
+
+    date:date.value,
+
+    page:page.value.trim(),
+
+    topic:topic.value,
+
+    wrong:wrong.value.trim(),
+
+    correct:correct.value.trim(),
+
+    reason:reason.value.trim(),
+
+    knowledge:knowledge.value.trim(),
+
+    memo:memo.value.trim(),
+
+    points:[...document.querySelectorAll("#checks input:checked")]
+
+      .map(x=>x.value)
+
   };
+
   if(id){
-    let old=data.find(x=>x.id===id); Object.assign(old,base);
-    // keep review progress when editing
+
+    let old=data.find(x=>x.id===id);
+
+    if(old)Object.assign(old,base);
+
   }else{
-    base.id=uid(); base.stage=0; base.next=addDays(base.date,1); base.reviews=[];
+
+    base.id=uid();
+
+    base.stage=0;
+
+    base.next=addDays(base.date,1);
+
+    base.reviews=[];
+
     data.unshift(base);
+
   }
-  save(data);closeModal();renderAll();toast(id?"更新しました":"記録しました");
+
+  save(data);
+
+  closeModal();
+
+  renderAll();
+
+  toast(id?"更新しました":"記録しました");
+
 }
-function renderAll(){renderHome();renderMistakes();renderReview();renderStats()}
+
+/* =========================
+
+   ホーム
+
+========================= */
+
+function renderAll(){
+
+  renderHome();
+
+  renderMistakes();
+
+  renderReview();
+
+  renderStats();
+
+  renderStudyPlan();
+
+}
 
 function getDue(){
-  return load().filter(m=>m.stage<intervals.length && m.next<=today());
+
+  return load().filter(
+
+    m=>m.stage<intervals.length && m.next<=today()
+
+  );
+
 }
+
 function renderHome(){
-  let data=load(), due=getDue(), mastered=data.filter(x=>x.stage>=intervals.length);
-  sToday.textContent=due.length;sAll.textContent=data.length;sMastered.textContent=mastered.length;
-  sRate.textContent=data.length?Math.round(mastered.length/data.length*100)+"%":"0%";
-  homeReview.innerHTML=due.length?due.slice(0,5).map(m=>itemHTML(m,true)).join(""):`<div class="card empty">🎉 今日の復習はありません。<br>新しい問題に挑戦しましょう！</div>`;
-  let parts=["Part1","Part2","Part3","Part4"];
-  partProgress.innerHTML=parts.map(p=>{
-    let a=data.filter(x=>x.part===p), done=a.filter(x=>x.stage>=intervals.length).length, pct=a.length?Math.round(done/a.length*100):0;
-    return `<div class="topic"><b>${p}</b><div class="bar"><div class="muted">${done}/${a.length} 克服</div><div class="progress"><i style="width:${pct}%"></i></div></div><b>${pct}%</b></div>`
-  }).join("");
-  let counts={};data.forEach(m=>counts[m.topic]=(counts[m.topic]||0)+1);
-  let arr=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,5);
-  weakTopics.innerHTML=arr.length?arr.map(([t,n])=>`<div class="row" style="padding:8px 0"><span>${esc(t)}</span><span class="badge b-red">${n}件</span></div>`).join(""):`<div class="empty">まだ記録がありません。</div>`;
-}
-function itemHTML(m,compact=false){
-  let due=m.stage>=intervals.length?"克服済み":(m.next<=today()?"今日復習":"次回 "+fmt(m.next));
-  let badge=m.stage>=intervals.length?"b-green":m.next<=today()?"b-red":"b-yellow";
-  return `<div class="item">
-    <div class="row"><div><span class="badge b-blue">${esc(m.part)}</span> <span class="badge ${badge}">${due}</span></div><button class="btn ghost small" onclick="openAdd('${m.id}')">編集</button></div>
-    <div style="font-weight:800;margin-top:8px">${esc(m.qno)}｜${esc(m.correct)}</div>
-    <div class="muted" style="margin-top:4px">${esc(m.topic)}${m.page?" ・ "+esc(m.page):""}</div>
-    ${compact?"":`<div style="margin-top:9px"><b>なぜ間違えた？</b><div>${esc(m.reason)||"—"}</div></div>
-    <div style="margin-top:8px"><b>正しい知識</b><div>${esc(m.knowledge)||"—"}</div></div>
-    <div class="actions" style="margin-top:10px">
-      <button class="btn secondary small" onclick="reviewNow('${m.id}')">🔄 復習できた</button>
-      <button class="btn danger small" onclick="deleteMistake('${m.id}')">削除</button>
-    </div>`}
-  </div>`
-}
-function renderMistakes(){
-  let q=(document.getElementById("search")?.value||"").toLowerCase();
-  let data=load().filter(m=>JSON.stringify(m).toLowerCase().includes(q));
-  mistakeList.innerHTML=data.length?data.map(m=>itemHTML(m)).join(""):`<div class="card empty">まだ間違いノートがありません。<br>「＋追加」から1問登録してみましょう。</div>`;
-}
-function renderReview(){
+
+  let data=load();
+
   let due=getDue();
-  reviewSummary.innerHTML=`<div class="row"><span>今日の復習</span><b style="font-size:25px">${due.length}問</b></div>`;
-  reviewList.innerHTML=due.length?due.map(m=>itemHTML(m)).join(""):`<div class="card empty">🎉 復習完了！<br>次の復習日まで、少し休みましょう。</div>`;
-}
-function reviewNow(id){
-  let data=load(),m=data.find(x=>x.id===id);if(!m)return;
-  if(m.stage<intervals.length)m.stage++;
-  m.reviews=m.reviews||[];m.reviews.push(today());
-  m.next=m.stage>=intervals.length?null:addDays(today(),intervals[m.stage]);
-  save(data);renderAll();toast(m.stage>=intervals.length?"🎉 克服済みにしました！":"復習を記録しました！");
-}
-function deleteMistake(id){if(!confirm("この記録を削除しますか？"))return;save(load().filter(x=>x.id!==id));renderAll();toast("削除しました")}
-function renderStats(){
-  let data=load(), mastered=data.filter(x=>x.stage>=intervals.length).length;
-  statAll.textContent=data.length;statMastered.textContent=mastered;
+
+  let mastered=data.filter(
+
+    x=>x.stage>=intervals.length
+
+  );
+
+  sToday.textContent=due.length;
+
+  sAll.textContent=data.length;
+
+  sMastered.textContent=mastered.length;
+
+  sRate.textContent=
+
+    data.length
+
+      ?Math.round(mastered.length/data.length*100)+"%"
+
+      :"0%";
+
+  homeReview.innerHTML=
+
+    due.length
+
+      ?due.slice(0,5).map(m=>itemHTML(m,true)).join("")
+
+      :`
+
+        <div class="card empty">
+
+          🎉 今日の復習はありません。<br>
+
+          新しい問題に挑戦しましょう！
+
+        </div>
+
+      `;
+
   let parts=["Part1","Part2","Part3","Part4"];
-  statsParts.innerHTML=parts.map(p=>{let a=data.filter(x=>x.part===p),d=a.filter(x=>x.stage>=intervals.length).length,pct=a.length?Math.round(d/a.length*100):0;return `<div class="topic"><b>${p}</b><div class="bar"><div class="muted">${a.length}件登録 / ${d}件克服</div><div class="progress"><i style="width:${pct}%"></i></div></div><b>${pct}%</b></div>`}).join("");
-  let counts={};data.forEach(m=>counts[m.topic]=(counts[m.topic]||0)+1);
-  let arr=Object.entries(counts).sort((a,b)=>b[1]-a[1]);
-  statsTopics.innerHTML=arr.length?arr.map(([t,n])=>`<div class="row" style="padding:8px 0;border-bottom:1px solid #edf2f5"><span>${esc(t)}</span><b>${n}件</b></div>`).join(""):`<div class="empty">データなし</div>`;
+
+  partProgress.innerHTML=parts.map(p=>{
+
+    let a=data.filter(x=>x.part===p);
+
+    let done=a.filter(
+
+      x=>x.stage>=intervals.length
+
+    ).length;
+
+    let pct=a.length
+
+      ?Math.round(done/a.length*100)
+
+      :0;
+
+    return `
+
+      <div class="topic">
+
+        <b>${p}</b>
+
+        <div class="bar">
+
+          <div class="muted">
+
+            ${done}/${a.length} 克服
+
+          </div>
+
+          <div class="progress">
+
+            <i style="width:${pct}%"></i>
+
+          </div>
+
+        </div>
+
+        <b>${pct}%</b>
+
+      </div>
+
+    `;
+
+  }).join("");
+
+  let counts={};
+
+  data.forEach(m=>{
+
+    counts[m.topic]=(counts[m.topic]||0)+1;
+
+  });
+
+  let arr=Object.entries(counts)
+
+    .sort((a,b)=>b[1]-a[1])
+
+    .slice(0,5);
+
+  weakTopics.innerHTML=
+
+    arr.length
+
+      ?arr.map(([t,n])=>`
+
+        <div class="row" style="padding:8px 0">
+
+          <span>${esc(t)}</span>
+
+          <span class="badge b-red">${n}件</span>
+
+        </div>
+
+      `).join("")
+
+      :`<div class="empty">まだ記録がありません。</div>`;
+
 }
+
+/* =========================
+
+   アイテム
+
+========================= */
+
+function itemHTML(m,compact=false){
+
+  let due=
+
+    m.stage>=intervals.length
+
+      ?"克服済み"
+
+      :(m.next<=today()
+
+        ?"今日復習"
+
+        :"次回 "+fmt(m.next));
+
+  let badge=
+
+    m.stage>=intervals.length
+
+      ?"b-green"
+
+      :m.next<=today()
+
+        ?"b-red"
+
+        :"b-yellow";
+
+  return `
+
+    <div class="item">
+
+      <div class="row">
+
+        <div>
+
+          <span class="badge b-blue">
+
+            ${esc(m.part)}
+
+          </span>
+
+          <span class="badge ${badge}">
+
+            ${due}
+
+          </span>
+
+        </div>
+
+        <button
+
+          class="btn ghost small"
+
+          onclick="openAdd('${m.id}')">
+
+          編集
+
+        </button>
+
+      </div>
+
+      <div style="font-weight:800;margin-top:8px">
+
+        ${esc(m.qno)}｜${esc(m.correct)}
+
+      </div>
+
+      <div class="muted" style="margin-top:4px">
+
+        ${esc(m.topic)}
+
+        ${m.page?" ・ "+esc(m.page):""}
+
+      </div>
+
+      ${
+
+        compact
+
+          ?""
+
+          :`
+
+            <div style="margin-top:9px">
+
+              <b>なぜ間違えた？</b>
+
+              <div>${esc(m.reason)||"—"}</div>
+
+            </div>
+
+            <div style="margin-top:8px">
+
+              <b>正しい知識</b>
+
+              <div>${esc(m.knowledge)||"—"}</div>
+
+            </div>
+
+            <div class="actions" style="margin-top:10px">
+
+              <button
+
+                class="btn secondary small"
+
+                onclick="reviewNow('${m.id}')">
+
+                🔄 復習できた
+
+              </button>
+
+              <button
+
+                class="btn danger small"
+
+                onclick="deleteMistake('${m.id}')">
+
+                削除
+
+              </button>
+
+            </div>
+
+          `
+
+      }
+
+    </div>
+
+  `;
+
+}
+
+/* =========================
+
+   間違い一覧
+
+========================= */
+
+function renderMistakes(){
+
+  let q=
+
+    (document.getElementById("search")?.value||"")
+
+    .toLowerCase();
+
+  let data=load().filter(
+
+    m=>JSON.stringify(m)
+
+      .toLowerCase()
+
+      .includes(q)
+
+  );
+
+  mistakeList.innerHTML=
+
+    data.length
+
+      ?data.map(m=>itemHTML(m)).join("")
+
+      :`
+
+        <div class="card empty">
+
+          まだ間違いノートがありません。<br>
+
+          「＋追加」から1問登録してみましょう。
+
+        </div>
+
+      `;
+
+}
+
+/* =========================
+
+   復習
+
+========================= */
+
+function renderReview(){
+
+  let due=getDue();
+
+  reviewSummary.innerHTML=`
+
+    <div class="row">
+
+      <span>今日の復習</span>
+
+      <b style="font-size:25px">${due.length}問</b>
+
+    </div>
+
+  `;
+
+  reviewList.innerHTML=
+
+    due.length
+
+      ?due.map(m=>itemHTML(m)).join("")
+
+      :`
+
+        <div class="card empty">
+
+          🎉 復習完了！<br>
+
+          次の復習日まで、少し休みましょう。
+
+        </div>
+
+      `;
+
+}
+
+function reviewNow(id){
+
+  let data=load();
+
+  let m=data.find(x=>x.id===id);
+
+  if(!m)return;
+
+  if(m.stage<intervals.length)m.stage++;
+
+  m.reviews=m.reviews||[];
+
+  m.reviews.push(today());
+
+  m.next=
+
+    m.stage>=intervals.length
+
+      ?null
+
+      :addDays(today(),intervals[m.stage]);
+
+  save(data);
+
+  renderAll();
+
+  toast(
+
+    m.stage>=intervals.length
+
+      ?"🎉 克服済みにしました！"
+
+      :"復習を記録しました！"
+
+  );
+
+}
+
+function deleteMistake(id){
+
+  if(!confirm("この記録を削除しますか？"))return;
+
+  save(load().filter(x=>x.id!==id));
+
+  renderAll();
+
+  toast("削除しました");
+
+}
+
+/* =========================
+
+   統計
+
+========================= */
+
+function renderStats(){
+
+  let data=load();
+
+  let mastered=data.filter(
+
+    x=>x.stage>=intervals.length
+
+  ).length;
+
+  statAll.textContent=data.length;
+
+  statMastered.textContent=mastered;
+
+  let parts=["Part1","Part2","Part3","Part4"];
+
+  statsParts.innerHTML=parts.map(p=>{
+
+    let a=data.filter(x=>x.part===p);
+
+    let d=a.filter(
+
+      x=>x.stage>=intervals.length
+
+    ).length;
+
+    let pct=a.length
+
+      ?Math.round(d/a.length*100)
+
+      :0;
+
+    return `
+
+      <div class="topic">
+
+        <b>${p}</b>
+
+        <div class="bar">
+
+          <div class="muted">
+
+            ${a.length}件登録 / ${d}件克服
+
+          </div>
+
+          <div class="progress">
+
+            <i style="width:${pct}%"></i>
+
+          </div>
+
+        </div>
+
+        <b>${pct}%</b>
+
+      </div>
+
+    `;
+
+  }).join("");
+
+  let counts={};
+
+  data.forEach(m=>{
+
+    counts[m.topic]=(counts[m.topic]||0)+1;
+
+  });
+
+  let arr=Object.entries(counts)
+
+    .sort((a,b)=>b[1]-a[1]);
+
+  statsTopics.innerHTML=
+
+    arr.length
+
+      ?arr.map(([t,n])=>`
+
+        <div
+
+          class="row"
+
+          style="
+
+            padding:8px 0;
+
+            border-bottom:1px solid #edf2f5
+
+          ">
+
+          <span>${esc(t)}</span>
+
+          <b>${n}件</b>
+
+        </div>
+
+      `).join("")
+
+      :`<div class="empty">データなし</div>`;
+
+}
+
+/* =========================
+
+   バックアップ
+
+========================= */
+
 function exportData(){
-  let blob=new Blob([JSON.stringify(load(),null,2)],{type:"application/json"});
-  let a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="ecg3-mistake-backup-"+today()+".json";a.click();URL.revokeObjectURL(a.href);
+
+  const backup={
+
+    version:2,
+
+    app:"ecg3-mistake-note",
+
+    exportedAt:new Date().toISOString(),
+
+    studyStart:getStudyStart(),
+
+    mistakes:load()
+
+  };
+
+  let blob=new Blob(
+
+    [JSON.stringify(backup,null,2)],
+
+    {type:"application/json"}
+
+  );
+
+  let a=document.createElement("a");
+
+  a.href=URL.createObjectURL(blob);
+
+  a.download=
+
+    "ecg3-mistake-backup-"+today()+".json";
+
+  a.click();
+
+  URL.revokeObjectURL(a.href);
+
   toast("バックアップを作成しました");
+
 }
+
+/* =========================
+
+   復元
+
+========================= */
+
 function importData(e){
-  let f=e.target.files[0];if(!f)return;
-  let r=new FileReader();r.onload=()=>{try{let d=JSON.parse(r.result);if(!Array.isArray(d))throw Error();save(d);renderAll();toast("復元しました")}catch(_){alert("正しいバックアップJSONではありません。")}};r.readAsText(f);
+
+  let f=e.target.files[0];
+
+  if(!f)return;
+
+  let r=new FileReader();
+
+  r.onload=()=>{
+
+    try{
+
+      let parsed=JSON.parse(r.result);
+
+      let mistakes;
+
+      let studyStart="";
+
+      /*
+
+       v2形式
+
+      */
+
+      if(
+
+        parsed &&
+
+        !Array.isArray(parsed) &&
+
+        Array.isArray(parsed.mistakes)
+
+      ){
+
+        mistakes=parsed.mistakes;
+
+        studyStart=parsed.studyStart||"";
+
+      }
+
+      /*
+
+       v1形式
+
+       */
+
+      else if(Array.isArray(parsed)){
+
+        mistakes=parsed;
+
+      }
+
+      else{
+
+        throw Error();
+
+      }
+
+      if(!confirm(
+
+        "現在のデータをバックアップデータに入れ替えます。\n\n"+
+
+        "現在のデータは上書きされます。続行しますか？"
+
+      ))return;
+
+      save(mistakes);
+
+      if(studyStart){
+
+        localStorage.setItem(
+
+          START_KEY,
+
+          studyStart
+
+        );
+
+      }
+
+      renderAll();
+
+      toast("復元しました");
+
+    }catch(_){
+
+      alert(
+
+        "正しいバックアップJSONではありません。"
+
+      );
+
+    }
+
+    e.target.value="";
+
+  };
+
+  r.readAsText(f);
+
 }
-function resetAll(){if(confirm("全データを削除します。本当に削除しますか？")){localStorage.removeItem(KEY);renderAll();toast("全データを削除しました")}}
+
+/* =========================
+
+   全削除
+
+========================= */
+
+function resetAll(){
+
+  if(
+
+    confirm(
+
+      "全データを削除します。本当に削除しますか？"
+
+    )
+
+  ){
+
+    localStorage.removeItem(KEY);
+
+    localStorage.removeItem(START_KEY);
+
+    renderAll();
+
+    toast("全データを削除しました");
+
+  }
+
+}
+
 setup();
+
 </script>
 </body>
 </html>
