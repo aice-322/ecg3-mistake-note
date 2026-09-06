@@ -1,4 +1,4 @@
-const CACHE = "ecg3-v2.0.0";
+const CACHE = "ecg3-v2.0.1";
 
 const ASSETS = [
 
